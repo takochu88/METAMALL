@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:docs.google.com)",
+      "WebFetch(domain:doc-08-3s-sheets.googleusercontent.com)",
+      "Bash(git -C 'C:\\\\Users\\\\asain\\\\METAMALL' log --oneline -10)",
+      "Bash(del:*)"
+    ]
+  }
+}
