@@ -13,12 +13,103 @@ MonoBehaviour:
   m_Name: MasterSheetConfig
   m_EditorClassIdentifier: Assembly-CSharp-Editor::MetaMall.Editor.MasterSheet.MasterSheetConfig
   sheets:
-  - spreadsheetId: 1v6tNRul5IgBJPJ9rlHf08ijHtQRrD7gVkvsP0RrPMkk
+  - sheetCategory: 0
+    spreadsheetId: 1v6tNRul5IgBJPJ9rlHf08ijHtQRrD7gVkvsP0RrPMkk
     gid: 0
     outputTable: {fileID: 11400000, guid: a194aed94ec922c45919f600f86e6f50, type: 2}
-  - spreadsheetId: 1v6tNRul5IgBJPJ9rlHf08ijHtQRrD7gVkvsP0RrPMkk
+  - sheetCategory: 0
+    spreadsheetId: 1v6tNRul5IgBJPJ9rlHf08ijHtQRrD7gVkvsP0RrPMkk
     gid: 1916928799
     outputTable: {fileID: 11400000, guid: 9bc6ecddc8d31de4291c4c17a9ffca31, type: 2}
-  - spreadsheetId: 1I5MgA6BICe62AaSlttxW7qy-AA-P5akUUWUm4THKsLM
+  - sheetCategory: 9
+    spreadsheetId: 1I5MgA6BICe62AaSlttxW7qy-AA-P5akUUWUm4THKsLM
     gid: 0
     outputTable: {fileID: 11400000, guid: 7002e8c1370015043b593554111aadc4, type: 2}
+  - sheetCategory: 9
+    spreadsheetId: 1I5MgA6BICe62AaSlttxW7qy-AA-P5akUUWUm4THKsLM
+    gid: 2030436574
+    outputTable: {fileID: 11400000, guid: ef3d097168946224ba7898e7e9d70402, type: 2}
+  - sheetCategory: 5
+    spreadsheetId: 
+    gid: 0
+    outputTable: {fileID: 11400000, guid: 548f2b7f2b5f4ef46a8c45af05a5084e, type: 2}
+  - sheetCategory: 5
+    spreadsheetId: 
+    gid: 0
+    outputTable: {fileID: 11400000, guid: 4fa3de604bd6e634f830da4f6b693d4f, type: 2}
+  - sheetCategory: 5
+    spreadsheetId: 
+    gid: 0
+    outputTable: {fileID: 11400000, guid: 17399fdef3f30a149a17b0c19b5fff3b, type: 2}
+  - sheetCategory: 5
+    spreadsheetId: 
+    gid: 0
+    outputTable: {fileID: 11400000, guid: c03ffb8d6f3a3864d8f3c03801fda14a, type: 2}
+  - sheetCategory: 5
+    spreadsheetId: 
+    gid: 0
+    outputTable: {fileID: 11400000, guid: 238a504aef594d64bb98b2ae521a0ffa, type: 2}
+  - sheetCategory: 5
+    spreadsheetId: 
+    gid: 0
+    outputTable: {fileID: 11400000, guid: e419622ad20e5d84dafd5a42eb91e857, type: 2}
+  - sheetCategory: 5
+    spreadsheetId: 
+    gid: 0
+    outputTable: {fileID: 11400000, guid: fbf8da90fd47ad64281a92001b6f9c2f, type: 2}
+  - sheetCategory: 5
+    spreadsheetId: 
+    gid: 0
+    outputTable: {fileID: 11400000, guid: 7ba5541b1dbef8541b752ded7682341b, type: 2}
+  - sheetCategory: 5
+    spreadsheetId: 
+    gid: 0
+    outputTable: {fileID: 11400000, guid: 9676925d4b54f23459388c5366c16635, type: 2}
+  - sheetCategory: 5
+    spreadsheetId: 
+    gid: 0
+    outputTable: {fileID: 11400000, guid: 1f2bcf4e9af57354ab9f38b428ae23a7, type: 2}
+  - sheetCategory: 7
+    spreadsheetId: 11CjqPfdcJex6BTzw4hAHmFJInrP7auU7BumXsjulU4Q
+    gid: 0
+    outputTable: {fileID: 11400000, guid: 7752a4f3c7f0c4e43948e02fd37915aa, type: 2}
+  - sheetCategory: 8
+    spreadsheetId: 11CjqPfdcJex6BTzw4hAHmFJInrP7auU7BumXsjulU4Q
+    gid: 724398459
+    outputTable: {fileID: 11400000, guid: 20977cba2e935e64c9762fc14ea9a753, type: 2}
+  - sheetCategory: 9
+    spreadsheetId: 1I5MgA6BICe62AaSlttxW7qy-AA-P5akUUWUm4THKsLM
+    gid: 1240812890
+    outputTable: {fileID: 11400000, guid: 3c44dbd4d1983ca49b4618c8435b6984, type: 2}
+  - sheetCategory: 0
+    spreadsheetId: 
+    gid: 0
+    outputTable: {fileID: 11400000, guid: 60b0130491c10ff49b0cd53d7cb15ebd, type: 2}
+  - sheetCategory: 1
+    spreadsheetId: 1s08kLd8aivKxznINIGYY0OxPmae3ok-ovKQipkSN_sQ
+    gid: 0
+    outputTable: {fileID: 11400000, guid: 61a5ec1e735330f4e9c4c2cb0394a396, type: 2}
+  - sheetCategory: 0
+    spreadsheetId: 
+    gid: 0
+    outputTable: {fileID: 11400000, guid: 54340dd8211ae7245a63e82b34252a63, type: 2}
+  - sheetCategory: 0
+    spreadsheetId: 
+    gid: 0
+    outputTable: {fileID: 11400000, guid: 892ca172418568340b91d51b7cbb7a65, type: 2}
+  - sheetCategory: 1
+    spreadsheetId: 1s08kLd8aivKxznINIGYY0OxPmae3ok-ovKQipkSN_sQ
+    gid: 637651180
+    outputTable: {fileID: 11400000, guid: 9cea39ae7f2bd3d4583674f5ddb6d29b, type: 2}
+  - sheetCategory: 1
+    spreadsheetId: 1s08kLd8aivKxznINIGYY0OxPmae3ok-ovKQipkSN_sQ
+    gid: 1671662628
+    outputTable: {fileID: 11400000, guid: 8ff56b8cef3944845ab3961a533df3f7, type: 2}
+  - sheetCategory: 1
+    spreadsheetId: 1s08kLd8aivKxznINIGYY0OxPmae3ok-ovKQipkSN_sQ
+    gid: 370691758
+    outputTable: {fileID: 11400000, guid: 2ac24c2d632d15c4fad137d5721ad2b6, type: 2}
+  - sheetCategory: 1
+    spreadsheetId: 1s08kLd8aivKxznINIGYY0OxPmae3ok-ovKQipkSN_sQ
+    gid: 801888263
+    outputTable: {fileID: 11400000, guid: 1e7d4e9225d25e642a47677637f14877, type: 2}

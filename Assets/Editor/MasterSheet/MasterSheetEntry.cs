@@ -1,11 +1,13 @@
 using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace MetaMall.Editor.MasterSheet
 {
     [Serializable]
     public class MasterSheetEntry
     {
+        [FormerlySerializedAs("category")] public MasterSheetCategory sheetCategory;
         public string spreadsheetId;
         public string gid = "0";
         public ScriptableObject outputTable;

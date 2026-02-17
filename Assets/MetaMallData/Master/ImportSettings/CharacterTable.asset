@@ -15,5 +15,81 @@ MonoBehaviour:
   rows:
   - key: ch-nana
     index: 0
+    talents: 0100000001000000010000000100000001000000010000000100000001000000
+    parallelIds: 00000000ffffffffffffffffffffffffffffffffffffffff
   - key: ch-yoi
     index: 1
+    talents: 0100000001000000010000000100000001000000010000000100000001000000
+    parallelIds: 01000000ffffffffffffffffffffffffffffffffffffffff
+  - key: ch-kobore
+    index: 2
+    talents: 0100000001000000010000000100000001000000010000000100000001000000
+    parallelIds: 02000000ffffffffffffffffffffffffffffffffffffffff
+  - key: ch-nico
+    index: 3
+    talents: 0100000001000000010000000100000001000000010000000100000001000000
+    parallelIds: 03000000ffffffffffffffffffffffffffffffffffffffff
+  - key: ch-roco
+    index: 4
+    talents: 0100000001000000010000000100000001000000010000000100000001000000
+    parallelIds: 04000000ffffffffffffffffffffffffffffffffffffffff
+  - key: ch-supica
+    index: 5
+    talents: 0100000001000000010000000100000001000000010000000100000001000000
+    parallelIds: 05000000ffffffffffffffffffffffffffffffffffffffff
+  - key: ch-ikka
+    index: 6
+    talents: 0100000001000000010000000100000001000000010000000100000001000000
+    parallelIds: 06000000ffffffffffffffffffffffffffffffffffffffff
+  - key: ca-malulu
+    index: 7
+    talents: 0100000001000000010000000100000001000000010000000100000001000000
+    parallelIds: 07000000ffffffffffffffffffffffffffffffffffffffff
+  - key: ca-malulu2
+    index: 8
+    talents: 0100000001000000010000000100000001000000010000000100000001000000
+    parallelIds: 07000000ffffffffffffffffffffffffffffffffffffffff
+  - key: ca-malulu3
+    index: 9
+    talents: 0100000001000000010000000100000001000000010000000100000001000000
+    parallelIds: 07000000ffffffffffffffffffffffffffffffffffffffff
+  - key: ca-malulu4
+    index: 10
+    talents: 0100000001000000010000000100000001000000010000000100000001000000
+    parallelIds: 07000000ffffffffffffffffffffffffffffffffffffffff
+  - key: ca-malulu5
+    index: 11
+    talents: 0100000001000000010000000100000001000000010000000100000001000000
+    parallelIds: 07000000ffffffffffffffffffffffffffffffffffffffff
+  - key: ca-malulu6
+    index: 12
+    talents: 0100000001000000010000000100000001000000010000000100000001000000
+    parallelIds: 07000000ffffffffffffffffffffffffffffffffffffffff
+  - key: ca-malulu7
+    index: 13
+    talents: 0100000001000000010000000100000001000000010000000100000001000000
+    parallelIds: 07000000ffffffffffffffffffffffffffffffffffffffff
+  - key: ca-malulu8
+    index: 14
+    talents: 0100000001000000010000000100000001000000010000000100000001000000
+    parallelIds: 07000000ffffffffffffffffffffffffffffffffffffffff
+  - key: ca-malulu9
+    index: 15
+    talents: 0100000001000000010000000100000001000000010000000100000001000000
+    parallelIds: 07000000ffffffffffffffffffffffffffffffffffffffff
+  - key: ca-malulu10
+    index: 16
+    talents: 0100000001000000010000000100000001000000010000000100000001000000
+    parallelIds: 07000000ffffffffffffffffffffffffffffffffffffffff
+  - key: ca-malulu11
+    index: 17
+    talents: 0100000001000000010000000100000001000000010000000100000001000000
+    parallelIds: 07000000ffffffffffffffffffffffffffffffffffffffff
+  - key: ca-malulu12
+    index: 18
+    talents: 0100000001000000010000000100000001000000010000000100000001000000
+    parallelIds: 07000000ffffffffffffffffffffffffffffffffffffffff
+  - key: ca-malulu13
+    index: 19
+    talents: 0100000001000000010000000100000001000000010000000100000001000000
+    parallelIds: 07000000ffffffffffffffffffffffffffffffffffffffff

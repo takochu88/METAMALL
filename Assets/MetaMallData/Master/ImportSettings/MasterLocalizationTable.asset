@@ -13,6 +13,9 @@ MonoBehaviour:
   m_Name: MasterLocalizationTable
   m_EditorClassIdentifier: Assembly-CSharp::LocalizationTable
   rows:
+  - key: name-ch-nana
+    ja: "\u30CA\u30CA"
+    en: nana
   - key: desc-ch-nana
     ja: "\u30CA\u30CA"
     en: nana

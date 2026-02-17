@@ -12,6 +12,18 @@ namespace MetaMall.Editor.MasterSheet
         private MasterSheetConfig _config;
         private Vector2 _scrollPos;
         private string _searchText = "";
+        private int _categoryFilter = -1; // -1 = All
+
+        private static readonly string[] CategoryFilterLabels;
+
+        static MasterSheetWindow()
+        {
+            var names = Enum.GetNames(typeof(MasterSheetCategory));
+            CategoryFilterLabels = new string[names.Length + 1];
+            CategoryFilterLabels[0] = "All";
+            for (int i = 0; i < names.Length; i++)
+                CategoryFilterLabels[i + 1] = names[i];
+        }
 
         [MenuItem("MetaMall/Master Sheet")]
         private static void Open()
@@ -72,21 +84,50 @@ namespace MetaMall.Editor.MasterSheet
 
         private void DrawSearchBar()
         {
+            EditorGUILayout.BeginHorizontal();
             _searchText = EditorGUILayout.TextField(_searchText, EditorStyles.toolbarSearchField);
+            _categoryFilter = EditorGUILayout.Popup(_categoryFilter + 1, CategoryFilterLabels, GUILayout.Width(110)) - 1;
+            EditorGUILayout.EndHorizontal();
             EditorGUILayout.Space(4);
         }
 
-        // ── Entry List ──────────────────────────────────────
+        // ── Entry List (カテゴリ別ボックス) ─────────────────
+
+        private readonly Dictionary<MasterSheetCategory, bool> _foldouts = new();
 
         private void DrawEntries()
         {
             MasterSheetEntry toDelete = null;
 
-            foreach (var entry in _config.sheets)
+            var categories = (MasterSheetCategory[])Enum.GetValues(typeof(MasterSheetCategory));
+
+            foreach (var cat in categories)
             {
-                if (!MatchesSearch(entry)) continue;
-                if (DrawEntryRow(entry))
-                    toDelete = entry;
+                if (_categoryFilter >= 0 && (int)cat != _categoryFilter) continue;
+
+                var entries = _config.sheets
+                    .Where(e => e.sheetCategory == cat && MatchesSearch(e))
+                    .ToList();
+
+                if (entries.Count == 0) continue;
+
+                if (!_foldouts.ContainsKey(cat)) _foldouts[cat] = true;
+
+                EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+
+                _foldouts[cat] = EditorGUILayout.Foldout(_foldouts[cat], $"{cat}  ({entries.Count})", true, EditorStyles.foldoutHeader);
+
+                if (_foldouts[cat])
+                {
+                    foreach (var entry in entries)
+                    {
+                        if (DrawEntryRow(entry))
+                            toDelete = entry;
+                    }
+                }
+
+                EditorGUILayout.EndVertical();
+                EditorGUILayout.Space(2);
             }
 
             if (toDelete != null)
@@ -143,6 +184,14 @@ namespace MetaMall.Editor.MasterSheet
 
             GUILayout.FlexibleSpace();
 
+            // カテゴリ変更
+            var newCat = (MasterSheetCategory)EditorGUILayout.EnumPopup(entry.sheetCategory, GUILayout.Width(90));
+            if (newCat != entry.sheetCategory)
+            {
+                entry.sheetCategory = newCat;
+                EditorUtility.SetDirty(_config);
+            }
+
             // Open
             GUI.enabled = !string.IsNullOrEmpty(entry.spreadsheetId);
             if (GUILayout.Button("Open", GUILayout.Width(50)))
@@ -175,13 +224,16 @@ namespace MetaMall.Editor.MasterSheet
 
         // ── + Create ────────────────────────────────────────
 
+        private const string ImportSettingsDir = "Assets/MetaMallData/Master/ImportSettings";
+
         private void OnCreate()
         {
             var tableTypes = FindAllTableTypes();
-            var dir = "Assets/MetaMallData/Master";
 
-            if (!AssetDatabase.IsValidFolder(dir))
-                AssetDatabase.CreateFolder("Assets/MetaMallData", "Master");
+            if (!AssetDatabase.IsValidFolder(ImportSettingsDir))
+            {
+                AssetDatabase.CreateFolder("Assets/MetaMallData/Master", "ImportSettings");
+            }
 
             // まず未登録の型を自動生成
             bool anyAutoCreated = false;
@@ -191,7 +243,7 @@ namespace MetaMall.Editor.MasterSheet
                     s.outputTable != null && s.outputTable.GetType() == type);
                 if (alreadyExists) continue;
 
-                var table = FindOrCreateAsset(type, dir);
+                var table = FindOrCreateAsset(type, ImportSettingsDir);
                 _config.sheets.Add(new MasterSheetEntry
                 {
                     outputTable = table,
@@ -208,7 +260,7 @@ namespace MetaMall.Editor.MasterSheet
             }
 
             // 全型が登録済み → 追加インスタンスを作れるドロップダウンを表示
-            ShowAddInstanceMenu(tableTypes, dir);
+            ShowAddInstanceMenu(tableTypes, ImportSettingsDir);
         }
 
         private void ShowAddInstanceMenu(List<Type> tableTypes, string dir)

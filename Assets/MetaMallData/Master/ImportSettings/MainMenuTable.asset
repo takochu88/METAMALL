@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 847c7a8bf691167469df65a4c5c4d1d8, type: 3}
+  m_Name: MainMenuTable
+  m_EditorClassIdentifier: Assembly-CSharp::MainMenuTable
+  rows:
+  - key: mm-top
+    id: 0
+    unlockFlag: 100
+    posType: 1
+  - key: mm-stage
+    id: 0
+    unlockFlag: 101
+    posType: 2
+  - key: mm-game-event
+    id: 0
+    unlockFlag: 102
+    posType: 2
+  - key: mm-purchase
+    id: 0
+    unlockFlag: 103
+    posType: 0
+  - key: mm-gacha
+    id: 0
+    unlockFlag: 104
+    posType: 0

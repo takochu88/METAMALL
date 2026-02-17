@@ -1,5 +1,7 @@
-public　abstract class FighterMaster
+public abstract class FighterMaster : MasterBase
 {
-    public string key;
-    public int id;
+    public int[] talents;
+
+    public int GetTalent(TalentType type) => talents[(int)type];
+    public void SetTalent(TalentType type, int value) => talents[(int)type] = value;
 }
