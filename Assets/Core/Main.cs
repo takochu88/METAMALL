@@ -1,30 +1,22 @@
-using Cysharp.Threading.Tasks;
+using System;
 using UnityEngine;
-using PrimeTween;
-using UnityEngine.UI;
 
+[DefaultExecutionOrder(0)]
 public class Main : MonoBehaviour
 {
     public UseCases useCase;
-    private Image target;
+    public MetaMallUI ui;
+  
     void  Awake()
     {
-       
+        Mgr.Instance.Setup();
+        useCase.Setup(this);
+        ui.Setup(this);
     }
 
-    public async UniTask a()
+    private void Update()
     {
-        Debug.Log("[Main] Awake");
-        await Tween.Alpha(target, 0, 1);
-    }
-
-    void Start()
-    {
-
-    }
-
-    void Update()
-    {
-
+        useCase.popup.OnUpdate();
+        useCase.debug.OnUpdate();
     }
 }

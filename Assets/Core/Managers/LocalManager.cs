@@ -36,7 +36,7 @@ public class LocalManager : MonoBehaviour
             Debug.LogWarning($"[LocalManager] キーが見つかりません: {key}");
             return key;
         }
-
+        
         return GetText(master);
     }
 

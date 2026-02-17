@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class SaveManager : MonoBehaviour
@@ -5,9 +6,15 @@ public class SaveManager : MonoBehaviour
     private const string ConfigKey = "ConfigData";
 
     public ConfigData Config { get; private set; } = new ConfigData();
+    public FlagData FlagData { get; private set; } = new FlagData();
+    public AllCharacterData AllCharacterData { get; private set; } = new AllCharacterData();
+    public RewardStock Stock { get; private set; } = new RewardStock();
 
     public void Load()
     {
+        AllCharacterData.Init(Mgr.Master.characterTable);
+        return;
+
         var json = PlayerPrefs.GetString(ConfigKey, "");
         if (!string.IsNullOrEmpty(json))
         {

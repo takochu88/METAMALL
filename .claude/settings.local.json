@@ -4,7 +4,15 @@
       "WebFetch(domain:docs.google.com)",
       "WebFetch(domain:doc-08-3s-sheets.googleusercontent.com)",
       "Bash(git -C 'C:\\\\Users\\\\asain\\\\METAMALL' log --oneline -10)",
-      "Bash(del:*)"
+      "Bash(del:*)",
+      "Bash(test:*)",
+      "Bash(find:*)",
+      "Bash(grep:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(node:*)",
+      "Bash(npm:*)",
+      "Bash(uloop skills install:*)",
+      "Bash(uloop compile:*)"
     ]
   }
 }
