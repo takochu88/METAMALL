@@ -1,0 +1,34 @@
+{
+  "ExportTimestamp": "2026-02-18 00:03:08",
+  "Context": {
+    "sceneType": "prefab",
+    "sceneName": "Assets/MetaMallUI/Prefabs/Base/HeadingText.prefab",
+    "nodeCount": 1,
+    "maxDepth": 0
+  },
+  "Hierarchy": [
+    {
+      "sceneName": "HeadingText",
+      "stats": {
+        "rootCount": 1,
+        "nodeCount": 1,
+        "maxDepth": 0
+      },
+      "roots": [
+        {
+          "name": "HeadingText",
+          "isActive": true,
+          "components": [
+            "RectTransform",
+            "TextMeshProUGUI",
+            "CanvasRenderer"
+          ],
+          "siblingIndex": 0,
+          "tag": "Untagged",
+          "layer": 0,
+          "children": []
+        }
+      ]
+    }
+  ]
+}

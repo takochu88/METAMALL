@@ -4,53 +4,61 @@ using UnityEngine.UI;
 
 public class RewardDetailUI : OverlayUIBase
 {
-    [SerializeField] Image icon;
-    [SerializeField] TMP_Text nameLabel;
-    [SerializeField] TMP_Text descLabel;
-    [SerializeField] TMP_Text typeLabel;
-    [SerializeField] TMP_Text amountLabel;
-    
+    [SerializeField] private DimensionUI dimensionUI;
+    [SerializeField] private Image icon;
+    [SerializeField] private TMP_Text nameLabel;
+    [SerializeField] private TMP_Text descLabel;
+    [SerializeField] private TMP_Text typeLabel;
+    [SerializeField] private LeadingZeroTextUI amountLabel;
+    [SerializeField] private MyButton useButton;
+    [SerializeField] private Image buttonImage;
+
     private int rewardId;
+    private bool canUse;
 
-    public void SetData(int rewardId)
+    void Awake()
     {
-        if(!Mgr.Master.TryGetReward(rewardId, out var reward))
-        {
-            Debug.LogError($"[Reward] rewardId={rewardId} が見つかりません");
-            return;
-        }
-
-        SetDataAnd(reward);
+        if (useButton != null) useButton.SetOnClick(OnUseClicked);
     }
 
-    public void SetDataAnd(RewardBase reward)
+    public void SetData(RewardBase reward, bool canUse)
     {
+        SetDataAndShow(reward);
+        useButton.gameObject.SetActiveIfChanged(canUse && reward.Type == RewardType.Use);
+    }
+
+    public void SetDataAndShow(RewardBase reward)
+    {
+        rewardId = reward.rewardId;
+        icon.sprite = reward.IconSprite;
         nameLabel.text = reward.Name;
         descLabel.text = reward.Desc;
-        amountLabel.text = Mgr.Save.Stock.GetAmount(reward.rewardId).ToString();
+        int amount = Mgr.Save.RewardStockData.GetAmount(reward);
+        amountLabel.SetValue(amount, reward.MaxStock);
+
+        bool isUseType = reward.DisplayType == RewardDisplayType.Use;
+        useButton.gameObject.SetActiveIfChanged(isUseType);
+        if (isUseType)
+        {
+            int useMax = UseCase_Reward.GetUseMax(reward.rewardId);
+            canUse = useMax > 0;
+            buttonImage.color = canUse ? Color.deepSkyBlue : Color.gray2;
+        }
+
+        dimensionUI.SetDimension(reward.dimension);
     }
 
-    private MasterBase GetMaster(RewardType type, int itemId)
+    private void OnUseClicked()
     {
-        return type switch
+        if (canUse)
         {
-            RewardType.UnlockCharacter => Mgr.Master.characterTable[itemId],
-            RewardType.Parallel        => Mgr.Master.parallelTable[itemId],
-            RewardType.Equipment       => Mgr.Master.equipmentTable[itemId],
-            RewardType.Ability         => Mgr.Master.abilityTable[itemId],
-            _ => null,
-        };
-    }
-
-    private string GetTypeName(RewardType type)
-    {
-        return type switch
+            var useUI = GetComponentInParent<OverlayStack>().rewardUseUI;
+            useUI.SetData(rewardId);
+            useUI.Show();
+        }
+        else
         {
-            RewardType.UnlockCharacter => "キャラクター",
-            RewardType.Parallel        => "パラレル",
-            RewardType.Equipment       => "装備",
-            RewardType.Ability         => "アビリティ",
-            _ => "その他",
-        };
+            Mgr.Toast.Show(Mgr.Local.Get("ui-unavailable-item"));
+        }
     }
 }

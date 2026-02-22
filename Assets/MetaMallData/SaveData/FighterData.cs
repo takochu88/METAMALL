@@ -5,9 +5,11 @@ public class FighterData
 {
     private const int BonusTypeCount = 4;
     private const int TalentCount = 8;
+    private const int StatusCount = 12;
 
     public int masterId;
     public int[][] talentBonuses; // [BonusType][TalentType] = int[4][8]
+    public int[] status; // [StatusType] = int[12]
 
     /// <summary> 全ボーナス配列を初期化 </summary>
     public void InitTalents()
@@ -16,6 +18,18 @@ public class FighterData
         for (int i = 0; i < BonusTypeCount; i++)
             talentBonuses[i] = new int[TalentCount];
     }
+
+    /// <summary> ステータス配列を初期化 </summary>
+    public void InitStatus()
+    {
+        status = new int[StatusCount];
+    }
+
+    /// <summary> ステータス値を取得 </summary>
+    public int GetStatus(StatusType type) => status[(int)type];
+
+    /// <summary> ステータス値を設定 </summary>
+    public void SetStatus(StatusType type, int value) => status[(int)type] = value;
 
     /// <summary> enum指定でボーナス配列を返す </summary>
     public int[] GetBonus(TalentBonusType type) => talentBonuses[(int)type];
@@ -44,5 +58,9 @@ public class FighterData
             for (int b = 0; b < BonusTypeCount; b++)
                 totals[t] += talentBonuses[b][t];
         return totals;
+    }
+
+    public void GetBaseStatus()
+    {
     }
 }

@@ -1,42 +1,29 @@
-using System;
 using UnityEngine;
 
 public class TalentUI : MonoBehaviour
 {
     [SerializeField] TalentRowUI[] rows;
 
-    /// <summary>
-    /// フルコントロール版。全行のデータとコールバックを一括設定。
-    /// </summary>
-    public void SetData(int[] baseTalents, int[] bonusTalents, int maxValue, bool[] canUpgrade, Action<int> onUpgrade)
+    public void Setup()
     {
         for (int i = 0; i < rows.Length; i++)
         {
-            var type = (TalentType)i;
-            string name = Mgr.Local.Get($"talent-{type}");
-            int baseVal = baseTalents[i];
-            int bonus = bonusTalents != null ? bonusTalents[i] : 0;
-            bool upgrade = canUpgrade != null && canUpgrade[i];
-
-            rows[i].SetData(name, baseVal, bonus, maxValue, upgrade);
-            rows[i].SetOnUpgrade(i, onUpgrade);
+            TalentRowUI row = rows[i];
+            row.Setup();
         }
     }
 
-    /// <summary>
-    /// ボーナスなし閲覧用の簡易版。
-    /// </summary>
-    public void SetData(FighterMaster fighter, int maxValue)
+    public void UpdateUI(FighterData data)
     {
+        int[] totalBonus = data.GetTotalBonuses();
+        
         for (int i = 0; i < rows.Length; i++)
         {
-            var type = (TalentType)i;
-            string name = Mgr.Local.Get($"talent-{type}");
-            int baseVal = fighter.GetTalent(type);
-
-            rows[i].SetData(name, baseVal, 0, maxValue, false);
+            TalentRowUI row = rows[i];
+            row.UpdateUI(totalBonus[i]);
         }
     }
+  
 
     /// <summary>
     /// 1行だけ更新。

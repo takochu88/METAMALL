@@ -162,8 +162,16 @@ namespace MetaMall.Editor.MasterSheet
                 if (targetType == typeof(string)) return "";
                 if (targetType == typeof(int)) return 0;
                 if (targetType == typeof(float)) return 0f;
+                if (targetType == typeof(bool)) return false;
 
                 return targetType.IsValueType ? Activator.CreateInstance(targetType) : null;
+            }
+
+            // targetType が bool の場合は型ヒントに関係なく変換
+            if (targetType == typeof(bool))
+            {
+                return raw.Equals("TRUE", StringComparison.OrdinalIgnoreCase)
+                    || raw.Equals("1", StringComparison.Ordinal);
             }
 
             // enum 型: 名前（"Unlock_TopMenu"）でも数値文字列（"100"）でも変換可能
@@ -186,6 +194,9 @@ namespace MetaMall.Editor.MasterSheet
                     return int.TryParse(raw, out var i) ? i : 0;
                 case "float":
                     return float.TryParse(raw, out var f) ? f : 0f;
+                case "bool":
+                    return raw.Equals("TRUE", StringComparison.OrdinalIgnoreCase)
+                        || raw.Equals("1", StringComparison.Ordinal);
 
                 case "string":
                 default:

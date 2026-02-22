@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SaveManager : MonoBehaviour
@@ -7,9 +6,11 @@ public class SaveManager : MonoBehaviour
 
     public ConfigData Config { get; private set; } = new ConfigData();
     public FlagData FlagData { get; private set; } = new FlagData();
+    public RewardStockData RewardStockData { get; private set; } = new RewardStockData();
     public AllCharacterData AllCharacterData { get; private set; } = new AllCharacterData();
-    public RewardStock Stock { get; private set; } = new RewardStock();
-
+    public SessionData SessionData { get; private set; } = new SessionData();
+    public MailSaveData MailSaveData { get; private set; } = new MailSaveData();
+    
     public void Load()
     {
         AllCharacterData.Init(Mgr.Master.characterTable);

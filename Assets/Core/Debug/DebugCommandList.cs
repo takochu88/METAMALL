@@ -9,7 +9,7 @@ public static partial class DebugCommandList
     {
         RegisterCharacterCommands();
         RegisterBattleCommands();
-        RegisterRewardCommands();
+        //RegisterRewardCommands();
         RegisterOtherCommands();
     }
 

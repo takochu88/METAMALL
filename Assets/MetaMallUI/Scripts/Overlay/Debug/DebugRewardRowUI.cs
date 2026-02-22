@@ -66,46 +66,20 @@ public class DebugRewardRowUI : MonoBehaviour
         iconImage.gameObject.SetActive(found);
         nameLabel.text = found ? name : "";
         nameLabel.gameObject.SetActive(found);
-        rewardIconUI.SetData(rewardId);
+       // rewardIconUI.SetData(rewardId, -1,  showAmount: false);
     }
 
     static string ResolveName(int rewardId)
     {
-        var type = (RewardType)(rewardId / RewardBase.Multiplier);
-        int itemId = rewardId % RewardBase.Multiplier;
-
-        try
-        {
-            MasterBase master = type switch
-            {
-                RewardType.UnlockCharacter => Mgr.Master.characterTable[itemId],
-                RewardType.Parallel        => Mgr.Master.parallelTable[itemId],
-                RewardType.Equipment       => Mgr.Master.equipmentTable[itemId],
-                RewardType.Ability         => Mgr.Master.abilityTable[itemId],
-                _ => null,
-            };
-            return master?.Name;
-        }
-        catch (Exception)
-        {
-            return null;
-        }
+        if (Mgr.Master.TryGetReward(rewardId, out var reward))
+            return reward.Name;
+        return null;
     }
 
     // ── 有効なRewardIDリストを構築 ──
     void BuildValidRewardIds()
     {
-        validRewardIds = new List<int>();
-        foreach (RewardType type in Enum.GetValues(typeof(RewardType)))
-        {
-            int baseId = (int)type * RewardBase.Multiplier;
-            for (int itemId = 0; itemId < RewardBase.Multiplier; itemId++)
-            {
-                int rewardId = baseId + itemId;
-                if (!string.IsNullOrEmpty(ResolveName(rewardId)))
-                    validRewardIds.Add(rewardId);
-            }
-        }
+        validRewardIds = new List<int>(Mgr.Master.AllRewardMasters.Keys);
         validRewardIds.Sort();
     }
 
@@ -132,7 +106,7 @@ public class DebugRewardRowUI : MonoBehaviour
         }
 
         rewardIdInput.text = validRewardIds[index].ToString();
-        rewardIconUI.SetData(validRewardIds[index]);
+      //  rewardIconUI.SetData(validRewardIds[index]);
     }
 
     // ── Amount: 1ずつ増減 ──
@@ -160,7 +134,7 @@ public class DebugRewardRowUI : MonoBehaviour
             return;
         }
         
-        main.useCase.reward.AddReward(rewardId, amount, isForce: true);
+        main.useCase.reward.AddReward(rewardId, amount, isActive: true);
     }
 
     static string BuildHintText()

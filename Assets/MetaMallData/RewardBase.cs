@@ -11,10 +11,12 @@ public abstract class RewardBase
     public int rewardId;
     public bool showWhenEmpty;
     public int maxStock = -1;
-
+    public RewardIncreaseMethodType increaseMethodType;
+    public Dimension dimension;
     public int MaxStock => maxStock < 0 ? DefaultMaxStock : maxStock;
     public RewardType Type => (RewardType)(rewardId / Multiplier);
     public int Id => rewardId % Multiplier;
+    public abstract RewardDisplayType DisplayType { get; }
 
     [NonSerialized] private string _cachedName;
     [NonSerialized] private string _cachedDesc;

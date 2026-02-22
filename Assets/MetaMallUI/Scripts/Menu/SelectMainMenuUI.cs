@@ -10,6 +10,7 @@ public class SelectMainMenuUI : MonoBehaviour
     public SelectMenuRowUI selectGameEventMenuRowUI;
     public SelectMenuRowUI selectPurchaseMenuRowUI;
     public SelectMenuRowUI selectGachaMenuRowUI;
+    public SelectMenuRowUI selectStoryMenuRowUI;
 
     [SerializeField] float showDuration = 0.15f;
     [SerializeField] Ease showEase = Ease.OutCubic;

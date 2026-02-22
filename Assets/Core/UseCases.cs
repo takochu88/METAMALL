@@ -8,7 +8,6 @@ using UnityEditor;
 public class UseCases : MonoBehaviour
 {
     [BoxGroup("コア")]    public UseCase_Config config;
-    [BoxGroup("コア")]    public UseCase_Mall mall;
 
     [BoxGroup("システム")] public UseCase_Popup popup;
     [BoxGroup("システム")] public UseCase_Tips tips;
@@ -21,10 +20,10 @@ public class UseCases : MonoBehaviour
     [FormerlySerializedAs("menu")] [BoxGroup("メニュー")]   public UseCase_HandleMenu handleMenu;
     [BoxGroup("メニュー")]   public UseCase_TopMenu topMenu;
     [BoxGroup("メニュー")]   public UseCase_Stage stage;
-
-    [BoxGroup("コンテンツ")] public UseCase_Container container;
+    
     [BoxGroup("コンテンツ")] public UseCase_Mission mission;
     [BoxGroup("コンテンツ")] public UseCase_GameEvent gameEvent;
+    [BoxGroup("コンテンツ")] public UseCase_Mail mail;
 
     [BoxGroup("キャラクター")] public UseCase_CustomCharacter customCharacter;
     [BoxGroup("キャラクター")] public UseCase_Formation formation;
@@ -34,6 +33,7 @@ public class UseCases : MonoBehaviour
 
     [BoxGroup("アイテム")]   public UseCase_Reward reward;
     [BoxGroup("アイテム")]   public UseCase_DisplayItem displayItem;
+    [BoxGroup("アイテム")]   public UseCase_Inventory inventory;
 
     [BoxGroup("デバッグ")]   public UseCase_Debug debug;
 
@@ -45,12 +45,10 @@ public class UseCases : MonoBehaviour
         shop.Setup(main);
         purchase.Setup(main);
         gacha.Setup(main);
-        mall.Setup(main);
         notice.Setup(main);
         handleMenu.Setup(main);
         topMenu.Setup(main);
         stage.Setup(main);
-        container.Setup(main);
         mission.Setup(main);
         gameEvent.Setup(main);
         customCharacter.Setup(main);
@@ -60,6 +58,8 @@ public class UseCases : MonoBehaviour
         ability.Setup(main);
         reward.Setup(main);
         displayItem.Setup(main);
+        inventory.Setup(main);
+        mail.Setup(main);
         debug.Setup(main);
     }
 
@@ -71,7 +71,6 @@ public class UseCases : MonoBehaviour
         int order = 0;
         // スクリプトのフィールド順 = ヒエラルキー順
         config    = GetOrCreate<UseCase_Config>("Config", order++);
-        mall      = GetOrCreate<UseCase_Mall>("Mall", order++);
         popup     = GetOrCreate<UseCase_Popup>("Popup", order++);
         tips      = GetOrCreate<UseCase_Tips>("Tips", order++);
         notice    = GetOrCreate<UseCase_Notice>("Notice", order++);
@@ -81,9 +80,9 @@ public class UseCases : MonoBehaviour
         handleMenu      = GetOrCreate<UseCase_HandleMenu>("Menu", order++);
         topMenu   = GetOrCreate<UseCase_TopMenu>("TopMenu", order++);
         stage     = GetOrCreate<UseCase_Stage>("Stage", order++);
-        container = GetOrCreate<UseCase_Container>("Container", order++);
         mission   = GetOrCreate<UseCase_Mission>("Mission", order++);
         gameEvent = GetOrCreate<UseCase_GameEvent>("GameEvent", order++);
+        mail      = GetOrCreate<UseCase_Mail>("Mail", order++);
         customCharacter = GetOrCreate<UseCase_CustomCharacter>("CustomCharacter", order++);
         formation = GetOrCreate<UseCase_Formation>("Formation", order++);
         parallel  = GetOrCreate<UseCase_Parallel>("Parallel", order++);
@@ -91,6 +90,7 @@ public class UseCases : MonoBehaviour
         ability   = GetOrCreate<UseCase_Ability>("Ability", order++);
         reward    = GetOrCreate<UseCase_Reward>("Reward", order++);
         displayItem = GetOrCreate<UseCase_DisplayItem>("DisplayItem", order++);
+        inventory   = GetOrCreate<UseCase_Inventory>("Inventory", order++);
         debug       = GetOrCreate<UseCase_Debug>("Debug", order++);
 
         EditorUtility.SetDirty(this);

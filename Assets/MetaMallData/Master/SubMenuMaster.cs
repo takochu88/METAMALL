@@ -1,7 +1,7 @@
 using System;
 
 [Serializable]
-public class SubMenuMaster : MasterBase
+public class SubMenuMaster : MenuBase
 {
-    public FlagType unlockFlag;
+    public int index;
 }

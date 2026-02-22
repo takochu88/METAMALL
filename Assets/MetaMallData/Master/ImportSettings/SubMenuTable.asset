@@ -14,4 +14,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SubMenuTable
   rows:
   - key: sm-mail
-    id: 0
+    menuType: 6
+    unlockFlag: 200
+    index: 0
+  - key: sm-notice
+    menuType: 7
+    unlockFlag: 201
+    index: 1
+  - key: sm-config
+    menuType: 8
+    unlockFlag: 202
+    index: 2
+  - key: sm-inventory
+    menuType: 9
+    unlockFlag: 203
+    index: 3
+  - key: sm-custom-character
+    menuType: 10
+    unlockFlag: 204
+    index: 4
+  - key: sm-formation
+    menuType: 11
+    unlockFlag: 205
+    index: 5

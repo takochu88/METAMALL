@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using PrimeTween;
 using Sirenix.OdinInspector;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,7 +14,7 @@ public class MyScrollRect : MonoBehaviour
 {
     // ── 列挙 ──────────────────────────────────
     public enum ScrollDirection { Vertical, Horizontal }
-    public enum CellSizeMode { Prefab, Manual }
+    public enum CellSizeMode { Prefab, Manual, Stretch }
 
     // ── 設定 ──────────────────────────────────
     [BoxGroup("基本設定")]
@@ -26,12 +25,16 @@ public class MyScrollRect : MonoBehaviour
     [SerializeField] float spacing = 0f;
 
     [BoxGroup("セルサイズ")]
-    [SerializeField] CellSizeMode cellSizeMode = CellSizeMode.Prefab;
+    [LabelText("横 (X)")]
+    [SerializeField] CellSizeMode cellSizeModeX = CellSizeMode.Stretch;
     [BoxGroup("セルサイズ")]
-    [ShowIf("cellSizeMode", CellSizeMode.Manual)]
+    [ShowIf("cellSizeModeX", CellSizeMode.Manual)]
     [SerializeField] float cellWidth = 100f;
     [BoxGroup("セルサイズ")]
-    [ShowIf("cellSizeMode", CellSizeMode.Manual)]
+    [LabelText("縦 (Y)")]
+    [SerializeField] CellSizeMode cellSizeModeY = CellSizeMode.Prefab;
+    [BoxGroup("セルサイズ")]
+    [ShowIf("cellSizeModeY", CellSizeMode.Manual)]
     [SerializeField] float cellHeight = 100f;
 
     [BoxGroup("パディング")]
@@ -45,7 +48,11 @@ public class MyScrollRect : MonoBehaviour
 
     [BoxGroup("スクロール制御")]
     [Tooltip("コンテンツがビューポートに収まる場合、スクロールを無効にする")]
-    [SerializeField] bool disableScrollWhenNotNeeded = true;
+    [SerializeField] private bool disableScrollWhenNotNeeded = true;
+
+    [BoxGroup("スクロール制御")]
+    [Tooltip("Scrollbar.size を Inspector の初期値で固定する（ScrollRect の自動サイズ変更を無効にする）")]
+    [SerializeField] private bool preserveScrollbarSize;
 
     [BoxGroup("アニメーション")]
     [SerializeField] float animDuration = 0.3f;
@@ -80,8 +87,14 @@ public class MyScrollRect : MonoBehaviour
     Tween scrollTween;
 
     // 解決済みセルサイズ（Init 時に確定）
-    float resolvedWidth;
-    float resolvedHeight;
+    private float resolvedWidth;
+    private float resolvedHeight;
+    private float scrollbarThickness;
+    private float scrollbarSpacing;
+
+    // Scrollbar サイズ保持用
+    private Scrollbar managedScrollbar;
+    private float initialScrollbarSize;
 
     // ── ヘルパー ──────────────────────────────
     bool  IsVertical   => direction == ScrollDirection.Vertical;
@@ -111,6 +124,19 @@ public class MyScrollRect : MonoBehaviour
         // RectTransform を壊すため Permanent に切り替えて修復する
         FixScrollbarLayout();
 
+        // Scrollbar サイズ保持モード: ScrollRect から切り離して手動管理
+        if (preserveScrollbarSize)
+        {
+            managedScrollbar = IsVertical ? _scrollRect.verticalScrollbar : _scrollRect.horizontalScrollbar;
+            if (managedScrollbar != null)
+            {
+                initialScrollbarSize = managedScrollbar.size;
+                if (IsVertical) _scrollRect.verticalScrollbar = null;
+                else            _scrollRect.horizontalScrollbar = null;
+                managedScrollbar.onValueChanged.AddListener(OnScrollbarDragged);
+            }
+        }
+
         // プール用コンテナ（content の外に配置してヒエラルキーを整理）
         var poolGo = new GameObject("_Pool", typeof(RectTransform));
         poolGo.transform.SetParent(transform, false);
@@ -131,8 +157,8 @@ public class MyScrollRect : MonoBehaviour
             _scrollRect.horizontalScrollbarVisibility = ScrollRect.ScrollbarVisibility.Permanent;
 
         var sbRT = (RectTransform)sb.transform;
-        float sbThickness = IsVertical ? sbRT.sizeDelta.x : sbRT.sizeDelta.y;
-        float spacing = IsVertical
+        scrollbarThickness = IsVertical ? sbRT.sizeDelta.x : sbRT.sizeDelta.y;
+        scrollbarSpacing = IsVertical
             ? _scrollRect.verticalScrollbarSpacing
             : _scrollRect.horizontalScrollbarSpacing;
 
@@ -141,13 +167,13 @@ public class MyScrollRect : MonoBehaviour
         {
             sbRT.anchorMin = new Vector2(1f, 0f);
             sbRT.anchorMax = new Vector2(1f, 1f);
-            sbRT.sizeDelta = new Vector2(sbThickness, 0f);
+            sbRT.sizeDelta = new Vector2(scrollbarThickness, 0f);
         }
         else
         {
             sbRT.anchorMin = new Vector2(0f, 0f);
             sbRT.anchorMax = new Vector2(1f, 0f);
-            sbRT.sizeDelta = new Vector2(0f, sbThickness);
+            sbRT.sizeDelta = new Vector2(0f, scrollbarThickness);
         }
 
         // Viewport: Scrollbar 分を引いてストレッチ
@@ -155,9 +181,9 @@ public class MyScrollRect : MonoBehaviour
         viewport.anchorMax = Vector2.one;
         viewport.anchoredPosition = Vector2.zero;
         if (IsVertical)
-            viewport.sizeDelta = new Vector2(-(sbThickness + spacing), 0f);
+            viewport.sizeDelta = new Vector2(-(scrollbarThickness + scrollbarSpacing), 0f);
         else
-            viewport.sizeDelta = new Vector2(0f, -(sbThickness + spacing));
+            viewport.sizeDelta = new Vector2(0f, -(scrollbarThickness + scrollbarSpacing));
     }
 
     void OnDisable()
@@ -274,8 +300,132 @@ public class MyScrollRect : MonoBehaviour
         ScrollTo(target, animated);
     }
 
+    /// <summary>
+    /// 指定インデックスがビューポート内に完全に収まるようスクロールする。
+    /// 既に収まっている場合は何もせず false を返す。
+    /// </summary>
+    public bool FollowIndex(int index, float alignment = 1f)
+    {
+        EnsureInitialized();
+        index = Mathf.Clamp(index, 0, Mathf.Max(0, totalCount - 1));
+
+        float scroll = IsVertical
+            ? content.anchoredPosition.y
+            : -content.anchoredPosition.x;
+        scroll = Mathf.Max(0f, scroll);
+
+        float cellStart = PaddingHead + index * Stride;
+        float cellEnd = cellStart + Stride + PaddingTail;
+        float viewEnd = scroll + ViewportSize;
+
+        if (cellEnd <= viewEnd) return false;
+
+        // cellEnd がビューポート下端に来る位置へスクロール
+        float pos = Mathf.Clamp(cellEnd - ViewportSize, 0f, MaxScroll);
+        var target = IsVertical
+            ? new Vector2(0f, pos)
+            : new Vector2(-pos, 0f);
+        ScrollTo(target, true);
+        return true;
+    }
+
+    /// <summary>セルの高さ(縦スクロール時)または幅(横スクロール時)をコードから設定する。次回 Init で反映。</summary>
+    public void SetCellMainSize(float size)
+    {
+        if (IsVertical)
+        {
+            cellSizeModeY = CellSizeMode.Manual;
+            cellHeight = size;
+        }
+        else
+        {
+            cellSizeModeX = CellSizeMode.Manual;
+            cellWidth = size;
+        }
+    }
+
+    /// <summary>パディングをコードから設定。</summary>
+    public void SetPadding(float top, float bottom)
+    {
+        paddingTop = top;
+        paddingBottom = bottom;
+    }
+
+    /// <summary>アイテム総数を動的に更新（ライン追加用）。</summary>
+    public void UpdateCount(int newCount)
+    {
+        totalCount = newCount;
+        if (IsVertical) content.sizeDelta = new Vector2(content.sizeDelta.x, ContentLength);
+        else            content.sizeDelta = new Vector2(ContentLength, content.sizeDelta.y);
+        if (disableScrollWhenNotNeeded)
+        {
+            bool need = ContentLength > ViewportSize;
+            if (IsVertical) scrollRect.vertical = need;
+            else            scrollRect.horizontal = need;
+        }
+        RefreshVisibleCells();
+    }
+
+    /// <summary>指定インデックスの可視セルを検索。</summary>
+    public MyScrollCell FindVisibleCell(int index)
+    {
+        foreach (var cell in visibleCells)
+            if (cell.Index == index) return cell;
+        return null;
+    }
+
+    /// <summary>アニメーション時間の公開。</summary>
+    public float AnimDuration => animDuration;
+
     /// <summary>総アイテム数。</summary>
     public int TotalCount => totalCount;
+
+    /// <summary>1セルあたりの高さ(幅) + spacing。Init後に有効。</summary>
+    public float ResolvedStride => Stride;
+
+    /// <summary>パディング含む全コンテンツ長。Init後に有効。</summary>
+    public float ResolvedContentLength => ContentLength;
+
+    /// <summary>正規化されたスクロール位置（0〜1）。</summary>
+    public float NormalizedPosition
+    {
+        get
+        {
+            EnsureInitialized();
+            return IsVertical
+                ? _scrollRect.verticalNormalizedPosition
+                : _scrollRect.horizontalNormalizedPosition;
+        }
+        set
+        {
+            EnsureInitialized();
+            scrollTween.Stop();
+            _scrollRect.velocity = Vector2.zero;
+            if (IsVertical) _scrollRect.verticalNormalizedPosition = value;
+            else            _scrollRect.horizontalNormalizedPosition = value;
+            RefreshVisibleCells();
+        }
+    }
+
+    /// <summary>スクロール操作の有効/無効を切り替える。無効時はスクロールバーを隠してビューポートを広げる。</summary>
+    public void SetScrollable(bool scrollable)
+    {
+        if (IsVertical) scrollRect.vertical   = scrollable;
+        else            scrollRect.horizontal = scrollable;
+
+        var sb = managedScrollbar != null
+            ? managedScrollbar
+            : (IsVertical ? scrollRect.verticalScrollbar : scrollRect.horizontalScrollbar);
+        if (sb != null)
+        {
+            sb.gameObject.SetActiveIfChanged(scrollable);
+            float offset = scrollable ? -(scrollbarThickness + scrollbarSpacing) : 0f;
+            if (IsVertical)
+                viewport.sizeDelta = new Vector2(offset, 0f);
+            else
+                viewport.sizeDelta = new Vector2(0f, offset);
+        }
+    }
 
     // ══════════════════════════════════════════
     //  デバッグ（実行中のみ）
@@ -322,20 +472,32 @@ public class MyScrollRect : MonoBehaviour
 
     void ResolveCellSize()
     {
-        if (cellSizeMode == CellSizeMode.Prefab && cellPrefab != null)
-        {
-            // ストレッチアンカーの場合、rect はシーン上の親サイズに依存して不正確になる
-            // sizeDelta を優先し、それが使えなければ Manual 値にフォールバック
-            bool stretchH = !Mathf.Approximately(cellPrefab.anchorMin.x, cellPrefab.anchorMax.x);
-            bool stretchV = !Mathf.Approximately(cellPrefab.anchorMin.y, cellPrefab.anchorMax.y);
+        resolvedWidth  = ResolveAxis(cellSizeModeX, cellWidth, true);
+        resolvedHeight = ResolveAxis(cellSizeModeY, cellHeight, false);
+    }
 
-            resolvedWidth  = stretchH ? cellWidth  : cellPrefab.rect.width;
-            resolvedHeight = stretchV ? cellHeight : cellPrefab.rect.height;
-        }
-        else
+    float ResolveAxis(CellSizeMode mode, float manualSize, bool isX)
+    {
+        switch (mode)
         {
-            resolvedWidth  = cellWidth;
-            resolvedHeight = cellHeight;
+            case CellSizeMode.Stretch:
+                return isX
+                    ? viewport.rect.width - paddingLeft - paddingRight
+                    : viewport.rect.height - paddingTop - paddingBottom;
+            case CellSizeMode.Manual:
+                return manualSize;
+            default: // Prefab
+                if (cellPrefab == null) return manualSize;
+                if (isX)
+                {
+                    bool stretch = !Mathf.Approximately(cellPrefab.anchorMin.x, cellPrefab.anchorMax.x);
+                    return stretch ? manualSize : cellPrefab.rect.width;
+                }
+                else
+                {
+                    bool stretch = !Mathf.Approximately(cellPrefab.anchorMin.y, cellPrefab.anchorMax.y);
+                    return stretch ? manualSize : cellPrefab.rect.height;
+                }
         }
     }
 
@@ -361,6 +523,8 @@ public class MyScrollRect : MonoBehaviour
 
     void RefreshVisibleCells()
     {
+        SyncScrollbar();
+
         if (totalCount <= 0 || Stride <= 0f) return;
 
         float scroll = IsVertical
@@ -417,12 +581,17 @@ public class MyScrollRect : MonoBehaviour
     void PositionCell(MyScrollCell cell)
     {
         float mainPos = PaddingHead + cell.Index * Stride;
-        float crossOffset = IsVertical ? paddingLeft : paddingTop;
 
         if (IsVertical)
-            cell.RectTransform.anchoredPosition = new Vector2(crossOffset, -mainPos);
+        {
+            float x = cellSizeModeX == CellSizeMode.Stretch ? 0f : paddingLeft;
+            cell.RectTransform.anchoredPosition = new Vector2(x, -mainPos);
+        }
         else
-            cell.RectTransform.anchoredPosition = new Vector2(mainPos, -crossOffset);
+        {
+            float y = cellSizeModeY == CellSizeMode.Stretch ? 0f : -paddingTop;
+            cell.RectTransform.anchoredPosition = new Vector2(mainPos, y);
+        }
     }
 
     MyScrollCell GetFromPool()
@@ -439,7 +608,7 @@ public class MyScrollRect : MonoBehaviour
         {
             var go = Instantiate(cellPrefab, content);
             cell = go.GetComponent<MyScrollCell>();
-            if (cell == null) cell = go.AddComponent<MyScrollCell>();
+            if (cell == null) cell = go.gameObject.AddComponent<MyScrollCell>();
             onInitCell?.Invoke(cell);
         }
 
@@ -449,25 +618,26 @@ public class MyScrollRect : MonoBehaviour
 
     void ApplyCellSize(RectTransform rt)
     {
+        bool stretchX = cellSizeModeX == CellSizeMode.Stretch;
+        bool stretchY = cellSizeModeY == CellSizeMode.Stretch;
+
         if (IsVertical)
         {
-            rt.anchorMin = new Vector2(0f, 1f);
-            rt.anchorMax = new Vector2(1f, 1f);
-            rt.pivot     = new Vector2(0.5f, 1f);
-            rt.sizeDelta = new Vector2(-(paddingLeft + paddingRight), resolvedHeight);
+            rt.anchorMin = new Vector2(stretchX ? 0f : 0f, 1f);
+            rt.anchorMax = new Vector2(stretchX ? 1f : 0f, 1f);
+            rt.pivot     = new Vector2(stretchX ? 0.5f : 0f, 1f);
+            rt.sizeDelta = new Vector2(
+                stretchX ? -(paddingLeft + paddingRight) : resolvedWidth,
+                resolvedHeight);
         }
         else
         {
-            rt.anchorMin = new Vector2(0f, 0f);
-            rt.anchorMax = new Vector2(0f, 1f);
-            rt.pivot     = new Vector2(0f, 0.5f);
-            rt.sizeDelta = new Vector2(resolvedWidth, -(paddingTop + paddingBottom));
-        }
-
-        if (cellSizeMode == CellSizeMode.Manual)
-        {
-            rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, resolvedWidth);
-            rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, resolvedHeight);
+            rt.anchorMin = new Vector2(0f, stretchY ? 0f : 0f);
+            rt.anchorMax = new Vector2(0f, stretchY ? 1f : 0f);
+            rt.pivot     = new Vector2(0f, stretchY ? 0.5f : 0f);
+            rt.sizeDelta = new Vector2(
+                resolvedWidth,
+                stretchY ? -(paddingTop + paddingBottom) : resolvedHeight);
         }
     }
 
@@ -476,5 +646,27 @@ public class MyScrollRect : MonoBehaviour
         cell.gameObject.SetActive(false);
         cell.transform.SetParent(poolRoot, false);
         pool.Push(cell);
+    }
+
+    // ── Scrollbar サイズ保持 ──────────────────
+
+    /// <summary>切り離した Scrollbar の value を content 位置に同期し、size を初期値に固定する。</summary>
+    void SyncScrollbar()
+    {
+        if (managedScrollbar == null) return;
+        float normalized = IsVertical
+            ? _scrollRect.verticalNormalizedPosition
+            : _scrollRect.horizontalNormalizedPosition;
+        managedScrollbar.SetValueWithoutNotify(Mathf.Clamp01(normalized));
+        managedScrollbar.size = initialScrollbarSize;
+    }
+
+    /// <summary>ユーザーが Scrollbar をドラッグしたときに content 位置を追従させる。</summary>
+    void OnScrollbarDragged(float value)
+    {
+        _scrollRect.velocity = Vector2.zero;
+        if (IsVertical) _scrollRect.verticalNormalizedPosition = value;
+        else            _scrollRect.horizontalNormalizedPosition = value;
+        RefreshVisibleCells();
     }
 }

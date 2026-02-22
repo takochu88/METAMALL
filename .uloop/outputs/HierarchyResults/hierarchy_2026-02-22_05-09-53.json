@@ -1,0 +1,294 @@
+{
+  "ExportTimestamp": "2026-02-22 05:09:53",
+  "Context": {
+    "sceneType": "editor",
+    "sceneName": "SampleScene",
+    "nodeCount": 18,
+    "maxDepth": 6
+  },
+  "Hierarchy": [
+    {
+      "sceneName": "SampleScene",
+      "stats": {
+        "rootCount": 1,
+        "nodeCount": 18,
+        "maxDepth": 6
+      },
+      "componentsLut": [
+        "RectTransform",
+        "ConfirmUI",
+        "Canvas",
+        "BlurBackground",
+        "GraphicRaycaster",
+        "CanvasGroup",
+        "CanvasRenderer",
+        "Image",
+        "Button",
+        "Mask",
+        "RawImage",
+        "MyButton",
+        "TrueShadow",
+        "ShadowRenderer",
+        "HorizontalLayoutGroup",
+        "TextMeshProUGUI",
+        "LocalizedText",
+        "BlinkTMP"
+      ],
+      "roots": [
+        {
+          "name": "ConfirmUI",
+          "isActive": true,
+          "componentsIdx": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "siblingIndex": 9,
+          "tag": "Untagged",
+          "layer": 5,
+          "children": [
+            {
+              "name": "CloseScreen",
+              "isActive": false,
+              "componentsIdx": [
+                0,
+                6,
+                7,
+                8
+              ],
+              "siblingIndex": 0,
+              "tag": "Untagged",
+              "layer": 5,
+              "children": []
+            },
+            {
+              "name": "Panel",
+              "isActive": true,
+              "componentsIdx": [
+                0
+              ],
+              "siblingIndex": 1,
+              "tag": "Untagged",
+              "layer": 5,
+              "children": [
+                {
+                  "name": "Area",
+                  "isActive": true,
+                  "componentsIdx": [
+                    0,
+                    6,
+                    7,
+                    9
+                  ],
+                  "siblingIndex": 0,
+                  "tag": "Untagged",
+                  "layer": 5,
+                  "children": [
+                    {
+                      "name": "RawImage",
+                      "isActive": true,
+                      "componentsIdx": [
+                        0,
+                        6,
+                        10
+                      ],
+                      "siblingIndex": 0,
+                      "tag": "Untagged",
+                      "layer": 5,
+                      "children": []
+                    },
+                    {
+                      "name": "CloseButton",
+                      "isActive": true,
+                      "componentsIdx": [
+                        0,
+                        11
+                      ],
+                      "siblingIndex": 1,
+                      "tag": "Untagged",
+                      "layer": 5,
+                      "children": [
+                        {
+                          "name": "Area",
+                          "isActive": true,
+                          "componentsIdx": [
+                            0,
+                            6,
+                            7,
+                            12,
+                            9
+                          ],
+                          "siblingIndex": 0,
+                          "tag": "Untagged",
+                          "layer": 5,
+                          "children": [
+                            {
+                              "name": "Area's Shadow",
+                              "isActive": true,
+                              "componentsIdx": [
+                                0,
+                                6,
+                                10,
+                                13
+                              ],
+                              "siblingIndex": 0,
+                              "tag": "Untagged",
+                              "layer": 0,
+                              "children": []
+                            },
+                            {
+                              "name": "CloseImage",
+                              "isActive": true,
+                              "componentsIdx": [
+                                0,
+                                6,
+                                7
+                              ],
+                              "siblingIndex": 1,
+                              "tag": "Untagged",
+                              "layer": 5,
+                              "children": []
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "name": "ButtonContainer",
+                      "isActive": true,
+                      "componentsIdx": [
+                        0,
+                        14
+                      ],
+                      "siblingIndex": 2,
+                      "tag": "Untagged",
+                      "layer": 0,
+                      "children": [
+                        {
+                          "name": "CancelButton",
+                          "isActive": true,
+                          "componentsIdx": [
+                            0,
+                            11
+                          ],
+                          "siblingIndex": 0,
+                          "tag": "Untagged",
+                          "layer": 0,
+                          "children": [
+                            {
+                              "name": "Area",
+                              "isActive": true,
+                              "componentsIdx": [
+                                0,
+                                6,
+                                7,
+                                12
+                              ],
+                              "siblingIndex": 0,
+                              "tag": "Untagged",
+                              "layer": 0,
+                              "children": [
+                                {
+                                  "name": "Area's Shadow",
+                                  "isActive": true,
+                                  "componentsIdx": [
+                                    0,
+                                    6,
+                                    10,
+                                    13
+                                  ],
+                                  "siblingIndex": 0,
+                                  "tag": "Untagged",
+                                  "layer": 0,
+                                  "children": []
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "name": "OkButton",
+                          "isActive": true,
+                          "componentsIdx": [
+                            0,
+                            11
+                          ],
+                          "siblingIndex": 1,
+                          "tag": "Untagged",
+                          "layer": 0,
+                          "children": [
+                            {
+                              "name": "Area",
+                              "isActive": true,
+                              "componentsIdx": [
+                                0,
+                                6,
+                                7,
+                                12
+                              ],
+                              "siblingIndex": 0,
+                              "tag": "Untagged",
+                              "layer": 0,
+                              "children": [
+                                {
+                                  "name": "Area's Shadow",
+                                  "isActive": true,
+                                  "componentsIdx": [
+                                    0,
+                                    6,
+                                    10,
+                                    13
+                                  ],
+                                  "siblingIndex": 0,
+                                  "tag": "Untagged",
+                                  "layer": 0,
+                                  "children": []
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "TitleText",
+                  "isActive": true,
+                  "componentsIdx": [
+                    0,
+                    15,
+                    6,
+                    16
+                  ],
+                  "siblingIndex": 1,
+                  "tag": "Untagged",
+                  "layer": 5,
+                  "children": []
+                },
+                {
+                  "name": "CloseText",
+                  "isActive": false,
+                  "componentsIdx": [
+                    0,
+                    17,
+                    15,
+                    6,
+                    16
+                  ],
+                  "siblingIndex": 2,
+                  "tag": "Untagged",
+                  "layer": 5,
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

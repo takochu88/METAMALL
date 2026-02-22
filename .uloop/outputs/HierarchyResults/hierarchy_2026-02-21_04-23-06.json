@@ -1,0 +1,298 @@
+{
+  "ExportTimestamp": "2026-02-21 04:23:06",
+  "Context": {
+    "sceneType": "editor",
+    "sceneName": "SampleScene",
+    "nodeCount": 17,
+    "maxDepth": 6
+  },
+  "Hierarchy": [
+    {
+      "sceneName": "SampleScene",
+      "stats": {
+        "rootCount": 1,
+        "nodeCount": 17,
+        "maxDepth": 6
+      },
+      "componentsLut": [
+        "RectTransform",
+        "MailUI",
+        "Canvas",
+        "BlurBackground",
+        "GraphicRaycaster",
+        "CanvasGroup",
+        "CanvasRenderer",
+        "Image",
+        "Button",
+        "Mask",
+        "RawImage",
+        "MyButton",
+        "TrueShadow",
+        "ShadowRenderer",
+        "MyScrollRect",
+        "ScrollRect",
+        "Scrollbar",
+        "TextMeshProUGUI",
+        "LocalizedText",
+        "BlinkTMP"
+      ],
+      "roots": [
+        {
+          "name": "MailUI",
+          "isActive": true,
+          "componentsIdx": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "siblingIndex": 0,
+          "tag": "Untagged",
+          "layer": 5,
+          "path": "MailUI",
+          "children": [
+            {
+              "name": "CloseScreen",
+              "isActive": false,
+              "componentsIdx": [
+                0,
+                6,
+                7,
+                8
+              ],
+              "siblingIndex": 0,
+              "tag": "Untagged",
+              "layer": 5,
+              "path": "MailUI/CloseScreen",
+              "children": []
+            },
+            {
+              "name": "Panel",
+              "isActive": true,
+              "componentsIdx": [
+                0
+              ],
+              "siblingIndex": 1,
+              "tag": "Untagged",
+              "layer": 5,
+              "path": "MailUI/Panel",
+              "children": [
+                {
+                  "name": "Area",
+                  "isActive": true,
+                  "componentsIdx": [
+                    0,
+                    6,
+                    7,
+                    9
+                  ],
+                  "siblingIndex": 0,
+                  "tag": "Untagged",
+                  "layer": 5,
+                  "path": "MailUI/Panel/Area",
+                  "children": [
+                    {
+                      "name": "RawImage",
+                      "isActive": true,
+                      "componentsIdx": [
+                        0,
+                        6,
+                        10
+                      ],
+                      "siblingIndex": 0,
+                      "tag": "Untagged",
+                      "layer": 5,
+                      "path": "MailUI/Panel/Area/RawImage",
+                      "children": []
+                    },
+                    {
+                      "name": "CloseButton",
+                      "isActive": true,
+                      "componentsIdx": [
+                        0,
+                        11
+                      ],
+                      "siblingIndex": 1,
+                      "tag": "Untagged",
+                      "layer": 0,
+                      "path": "MailUI/Panel/Area/CloseButton",
+                      "children": [
+                        {
+                          "name": "Area",
+                          "isActive": true,
+                          "componentsIdx": [
+                            0,
+                            6,
+                            7,
+                            12,
+                            9
+                          ],
+                          "siblingIndex": 0,
+                          "tag": "Untagged",
+                          "layer": 0,
+                          "path": "MailUI/Panel/Area/CloseButton/Area",
+                          "children": [
+                            {
+                              "name": "Area's Shadow",
+                              "isActive": true,
+                              "componentsIdx": [
+                                0,
+                                6,
+                                10,
+                                13
+                              ],
+                              "siblingIndex": 0,
+                              "tag": "Untagged",
+                              "layer": 0,
+                              "path": "MailUI/Panel/Area/CloseButton/Area/Area's Shadow",
+                              "children": []
+                            },
+                            {
+                              "name": "Image",
+                              "isActive": true,
+                              "componentsIdx": [
+                                0,
+                                6,
+                                7
+                              ],
+                              "siblingIndex": 1,
+                              "tag": "Untagged",
+                              "layer": 0,
+                              "path": "MailUI/Panel/Area/CloseButton/Area/Image",
+                              "children": []
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "name": "VerticalScroll",
+                      "isActive": true,
+                      "componentsIdx": [
+                        0,
+                        6,
+                        14,
+                        7,
+                        15
+                      ],
+                      "siblingIndex": 2,
+                      "tag": "Untagged",
+                      "layer": 0,
+                      "path": "MailUI/Panel/Area/VerticalScroll",
+                      "children": [
+                        {
+                          "name": "Viewport",
+                          "isActive": true,
+                          "componentsIdx": [
+                            0,
+                            6,
+                            7,
+                            9
+                          ],
+                          "siblingIndex": 0,
+                          "tag": "Untagged",
+                          "layer": 0,
+                          "path": "MailUI/Panel/Area/VerticalScroll/Viewport",
+                          "children": [
+                            {
+                              "name": "Content",
+                              "isActive": true,
+                              "componentsIdx": [
+                                0
+                              ],
+                              "siblingIndex": 0,
+                              "tag": "Untagged",
+                              "layer": 0,
+                              "path": "MailUI/Panel/Area/VerticalScroll/Viewport/Content",
+                              "children": []
+                            }
+                          ]
+                        },
+                        {
+                          "name": "Scrollbar Vertical",
+                          "isActive": true,
+                          "componentsIdx": [
+                            0,
+                            6,
+                            7,
+                            16
+                          ],
+                          "siblingIndex": 1,
+                          "tag": "Untagged",
+                          "layer": 0,
+                          "path": "MailUI/Panel/Area/VerticalScroll/Scrollbar Vertical",
+                          "children": [
+                            {
+                              "name": "Sliding Area",
+                              "isActive": true,
+                              "componentsIdx": [
+                                0
+                              ],
+                              "siblingIndex": 0,
+                              "tag": "Untagged",
+                              "layer": 0,
+                              "path": "MailUI/Panel/Area/VerticalScroll/Scrollbar Vertical/Sliding Area",
+                              "children": [
+                                {
+                                  "name": "Handle",
+                                  "isActive": true,
+                                  "componentsIdx": [
+                                    0,
+                                    6,
+                                    7
+                                  ],
+                                  "siblingIndex": 0,
+                                  "tag": "Untagged",
+                                  "layer": 0,
+                                  "path": "MailUI/Panel/Area/VerticalScroll/Scrollbar Vertical/Sliding Area/Handle",
+                                  "children": []
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "TitleText",
+                  "isActive": true,
+                  "componentsIdx": [
+                    0,
+                    17,
+                    6,
+                    18
+                  ],
+                  "siblingIndex": 1,
+                  "tag": "Untagged",
+                  "layer": 0,
+                  "path": "MailUI/Panel/TitleText",
+                  "children": []
+                },
+                {
+                  "name": "CloseText",
+                  "isActive": false,
+                  "componentsIdx": [
+                    0,
+                    19,
+                    17,
+                    6,
+                    18
+                  ],
+                  "siblingIndex": 2,
+                  "tag": "Untagged",
+                  "layer": 0,
+                  "path": "MailUI/Panel/CloseText",
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -17,7 +17,11 @@ MonoBehaviour:
     rewardId: 9990000
     showWhenEmpty: 0
     maxStock: -1
+    increaseMethodType: 0
+    dimension: 0
   - key: ot-yoi
     rewardId: 9990001
     showWhenEmpty: 0
     maxStock: -1
+    increaseMethodType: 0
+    dimension: 4

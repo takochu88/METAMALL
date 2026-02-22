@@ -15,9 +15,19 @@ MonoBehaviour:
   rows:
   - key: cu-meta-coin
     rewardId: 1000000
-    showWhenEmpty: 0
+    showWhenEmpty: 1
     maxStock: -1
-  - key: cu-meta-piece
+    increaseMethodType: 0
+    dimension: 0
+  - key: cu-meta-stal
     rewardId: 1000001
-    showWhenEmpty: 0
+    showWhenEmpty: 1
     maxStock: -1
+    increaseMethodType: 1
+    dimension: 4
+  - key: cu-meta-piece
+    rewardId: 1000002
+    showWhenEmpty: 1
+    maxStock: -1
+    increaseMethodType: 0
+    dimension: 2

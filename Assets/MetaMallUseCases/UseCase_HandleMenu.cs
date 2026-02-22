@@ -4,13 +4,13 @@ using UnityEngine;
 public class UseCase_HandleMenu : MonoBehaviour
 {
     private Main main;
-    private MainMenuType currentMainMenuType;
+    private MenuType _currentMenuType;
 
     [Header("スライド設定")]
     [SerializeField] float slideDuration = 0.3f;
     [SerializeField] Ease slideEase = Ease.OutCubic;
 
-    public MainMenuType CurrentMainMenuType => currentMainMenuType;
+    public MenuType CurrentMenuType => _currentMenuType;
 
     public void Setup(Main main)
     {
@@ -19,14 +19,14 @@ public class UseCase_HandleMenu : MonoBehaviour
 
     public void OnSelectMainMenu(int menuTypeIndex)
     {
-        MainMenuType newMainMenuType = (MainMenuType)menuTypeIndex;
-        if (currentMainMenuType == newMainMenuType) return;
+        MenuType newMenuType = (MenuType)menuTypeIndex;
+        if (_currentMenuType == newMenuType) return;
 
-        MainMenuType prevMainMenuType = currentMainMenuType;
-        currentMainMenuType = newMainMenuType;
+        MenuType prevMenuType = _currentMenuType;
+        _currentMenuType = newMenuType;
 
-        MenuUIBase prevMenuUI = main.ui.GetMenuUI(prevMainMenuType);
-        MenuUIBase newMenuUI  = main.ui.GetMenuUI(newMainMenuType);
+        MenuUIBase prevMenuUI = main.ui.GetMenuUI(prevMenuType);
+        MenuUIBase newMenuUI  = main.ui.GetMenuUI(newMenuType);
 
         // 同じUIなら再表示だけ
         if (prevMenuUI == newMenuUI)
@@ -35,7 +35,7 @@ public class UseCase_HandleMenu : MonoBehaviour
             return;
         }
 
-        MainMenuUIPosType prevPosType = Mgr.Master.mainMenuTable[(int)prevMainMenuType].posType;
+        MainMenuUIPosType prevPosType = Mgr.Master.mainMenuTable[(int)prevMenuType].posType;
         MainMenuUIPosType newPosType  = Mgr.Master.mainMenuTable[menuTypeIndex].posType;
         
         // ── スライド方向を決定 ──
@@ -45,7 +45,7 @@ public class UseCase_HandleMenu : MonoBehaviour
         if (prevPosType != newPosType)
             moveRight = (int)newPosType > (int)prevPosType;
         else
-            moveRight = (int)newMainMenuType > (int)prevMainMenuType;
+            moveRight = (int)newMenuType > (int)prevMenuType;
 
         // UI操作をブロック＋SelectMenuを一時的に隠す
         main.ui.SetInteractable(false);
@@ -64,51 +64,56 @@ public class UseCase_HandleMenu : MonoBehaviour
     {
         SelectMainMenuUI selectMainMenuUI = main.ui.selectMainMenuUI;
         
-        switch (currentMainMenuType)
+        switch (_currentMenuType)
         {
-            case MainMenuType.Top:
+            case MenuType.Top:
                 selectMainMenuUI.selectTopMenuRowUIRight.SetVisible(false);
                 selectMainMenuUI.selectTopMenuRowUILeft.SetVisible(false);
                 selectMainMenuUI.selectStageMenuRowUI.SetVisible(true);
                 selectMainMenuUI.selectGameEventMenuRowUI.SetVisible(true);
                 selectMainMenuUI.selectPurchaseMenuRowUI.SetVisible(true);
                 selectMainMenuUI.selectGachaMenuRowUI.SetVisible(true);
+                selectMainMenuUI.selectStoryMenuRowUI.SetVisible(true);
                 break;
             
-            case MainMenuType.Stage:
+            case MenuType.Stage:
                 selectMainMenuUI.selectTopMenuRowUIRight.SetVisible(false);
                 selectMainMenuUI.selectTopMenuRowUILeft.SetVisible(true);
                 selectMainMenuUI.selectStageMenuRowUI.SetVisible(false);
                 selectMainMenuUI.selectGameEventMenuRowUI.SetVisible(false);
                 selectMainMenuUI.selectPurchaseMenuRowUI.SetVisible(false);
                 selectMainMenuUI.selectGachaMenuRowUI.SetVisible(false);
+                selectMainMenuUI.selectStoryMenuRowUI.SetVisible(false);
                 break;
             
-            case MainMenuType.GameEvent:
+            case MenuType.GameEvent:
                 selectMainMenuUI.selectTopMenuRowUIRight.SetVisible(false);
                 selectMainMenuUI.selectTopMenuRowUILeft.SetVisible(true);
                 selectMainMenuUI.selectStageMenuRowUI.SetVisible(false);
                 selectMainMenuUI.selectGameEventMenuRowUI.SetVisible(false);
                 selectMainMenuUI.selectPurchaseMenuRowUI.SetVisible(false);
                 selectMainMenuUI.selectGachaMenuRowUI.SetVisible(false);
+                selectMainMenuUI.selectStoryMenuRowUI.SetVisible(false);
                 break;
             
-            case MainMenuType.Purchase:
+            case MenuType.Purchase:
                 selectMainMenuUI.selectTopMenuRowUIRight.SetVisible(true);
                 selectMainMenuUI.selectTopMenuRowUILeft.SetVisible(false);
                 selectMainMenuUI.selectStageMenuRowUI.SetVisible(false);
                 selectMainMenuUI.selectGameEventMenuRowUI.SetVisible(false);
                 selectMainMenuUI.selectPurchaseMenuRowUI.SetVisible(false);
                 selectMainMenuUI.selectGachaMenuRowUI.SetVisible(false);
+                selectMainMenuUI.selectStoryMenuRowUI.SetVisible(false);
                 break;
             
-            case MainMenuType.Gacha:
+            case MenuType.Gacha:
                 selectMainMenuUI.selectTopMenuRowUIRight.SetVisible(true);
                 selectMainMenuUI.selectTopMenuRowUILeft.SetVisible(false);
                 selectMainMenuUI.selectStageMenuRowUI.SetVisible(false);
                 selectMainMenuUI.selectGameEventMenuRowUI.SetVisible(false);
                 selectMainMenuUI.selectPurchaseMenuRowUI.SetVisible(false);
                 selectMainMenuUI.selectGachaMenuRowUI.SetVisible(false);
+                selectMainMenuUI.selectStoryMenuRowUI.SetVisible(false);
                 break;
                 
         }

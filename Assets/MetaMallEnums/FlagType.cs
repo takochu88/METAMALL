@@ -11,5 +11,10 @@
     Unlock_GachaMenu = 104,
     
     //サブメニューのアンロックフラグ 200~
-    Unlock_MailMenu = 200,hu
+    Unlock_MailMenu = 200,
+    Unlock_NoticeMenu　 = 201,
+    Unlock_ConfigMenu　 = 202,
+    Unlock_InventoryMenu　 = 203,
+    Unlock_CustomCharacter = 204,
+    Unlock_Formation = 205,
 }

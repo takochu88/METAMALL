@@ -14,22 +14,32 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MainMenuTable
   rows:
   - key: mm-top
-    id: 0
+    menuType: 0
     unlockFlag: 100
+    index: 0
     posType: 1
   - key: mm-stage
-    id: 0
+    menuType: 1
     unlockFlag: 101
+    index: 1
     posType: 2
   - key: mm-game-event
-    id: 0
+    menuType: 2
     unlockFlag: 102
+    index: 2
     posType: 2
   - key: mm-purchase
-    id: 0
+    menuType: 3
     unlockFlag: 103
+    index: 3
     posType: 0
   - key: mm-gacha
-    id: 0
+    menuType: 4
     unlockFlag: 104
+    index: 4
     posType: 0
+  - key: mm-story
+    menuType: 5
+    unlockFlag: 0
+    index: 5
+    posType: 2

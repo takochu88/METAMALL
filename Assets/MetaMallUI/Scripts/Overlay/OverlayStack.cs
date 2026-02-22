@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class OverlayStack : MonoBehaviour
 {
@@ -19,7 +18,13 @@ public class OverlayStack : MonoBehaviour
     public CustomCharacterUI customCharacterUI;
     public FormationUI formationUI;
     public DebugPanelUI debugPanelUI;
-    [FormerlySerializedAs("itemDetailUI")] public RewardDetailUI rewardDetailUI;
+    public RewardDetailUI rewardDetailUI;
+    public RewardUseUI rewardUseUI;
+    public GetRewardUI getRewardUI;
+    public ConfirmUI confirmUI;
+    public CautionUI cautionUI;
+    public InventoryUI inventoryUI;
+    public ConfigUI configUI;
 
     // ── 初期化 ───────────────────────────────
     void Awake()

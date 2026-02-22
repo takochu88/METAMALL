@@ -4,3 +4,4 @@ using System;
 public class AbilityMaster : MasterBase
 {
 }
+

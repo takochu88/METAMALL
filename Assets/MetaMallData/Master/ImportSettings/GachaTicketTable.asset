@@ -17,7 +17,11 @@ MonoBehaviour:
     rewardId: 1010000
     showWhenEmpty: 0
     maxStock: -1
+    increaseMethodType: 0
+    dimension: 0
   - key: gt-special
     rewardId: 1010001
     showWhenEmpty: 0
     maxStock: -1
+    increaseMethodType: 0
+    dimension: 4

@@ -14,6 +14,10 @@ public class UseCase_Popup : MonoBehaviour
         if (!main.ui.IsInteractable) return;
 
         //獲得したアイテムを表示する
-        main.useCase.reward.ShowRewards();
+        if (!main.ui.OverlayStack.getRewardUI.IsShown)
+        {
+            main.useCase.reward.ShowRewards();
+        }
+        
     }
 }

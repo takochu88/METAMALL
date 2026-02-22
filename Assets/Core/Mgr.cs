@@ -13,6 +13,7 @@ public class Mgr : MonoBehaviour
     [SerializeField] private ResourceManager resource;
     [SerializeField] private ToastManager toast;
     [SerializeField] private LoadingManager loading;
+    [SerializeField] private PlayFabManager playFab;
 
     public static MasterManager Master => Instance.master;
     public static SaveManager Save => Instance.save;
@@ -20,6 +21,7 @@ public class Mgr : MonoBehaviour
     public static ResourceManager Resource => Instance.resource;
     public static ToastManager Toast => Instance.toast;
     public static LoadingManager Loading => Instance.loading;
+    public static PlayFabManager PlayFab => Instance.playFab;
 
     private void Awake()
     {

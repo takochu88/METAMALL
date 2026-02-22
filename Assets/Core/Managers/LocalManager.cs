@@ -53,11 +53,12 @@ public class LocalManager : MonoBehaviour
     private string GetText(LocalizationMaster master)
     {
         var lang = Mgr.Save.GetLanguage();
-        return lang switch
+        var text = lang switch
         {
             Language.Ja => master.ja,
             Language.En => master.en,
             _ => master.ja,
         };
+        return text.Replace("\\n", "\n");
     }
 }

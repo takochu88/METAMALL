@@ -1,21 +1,24 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class LoadingManager : MonoBehaviour
 {
-    [SerializeField] Canvas canvas;
-    [SerializeField] CanvasGroup canvasGroup;
-    [SerializeField] RectTransform loadingRect;
-    [SerializeField] Image blocker;
+    [SerializeField] private Canvas canvas;
+    [SerializeField] private CanvasGroup canvasGroup;
+    [SerializeField] private RectTransform loadingRect;
+    [SerializeField] private Image blocker;
+    [SerializeField] private TMP_Text messageLabel;
 
-    [SerializeField] float fadeDuration = 0.15f;
-    [SerializeField] float timeout = 30f;
+    [SerializeField] private float fadeDuration = 0.15f;
+    [SerializeField] private float timeout = 30f;
 
-    Coroutine current;
+    private Coroutine current;
 
-    public void Show(float duration = -1)
+    public void Show(LoadingType type = LoadingType.Loading, float duration = -1)
     {
+        ApplyType(type);
         Show(Vector2.zero, duration);
     }
 
@@ -25,6 +28,17 @@ public class LoadingManager : MonoBehaviour
 
         loadingRect.anchoredPosition = position;
         current = StartCoroutine(ShowRoutine(duration));
+    }
+
+    private void ApplyType(LoadingType type)
+    {
+        if (messageLabel == null) return;
+        messageLabel.text = type switch
+        {
+            LoadingType.Communication => "通信中...",
+            LoadingType.Boot          => "起動中...",
+            _                         => "ロード中...",
+        };
     }
 
     public void Hide()

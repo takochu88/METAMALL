@@ -17,7 +17,11 @@ MonoBehaviour:
     rewardId: 1020000
     showWhenEmpty: 0
     maxStock: -1
+    increaseMethodType: 0
+    dimension: 0
   - key: st-0
     rewardId: 1020001
     showWhenEmpty: 0
     maxStock: -1
+    increaseMethodType: 0
+    dimension: 4

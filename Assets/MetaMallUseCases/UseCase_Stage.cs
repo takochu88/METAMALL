@@ -8,8 +8,8 @@ public class UseCase_Stage : MonoBehaviour
     {
         this.main = main;
 
-        var topUI = main.ui.GetMenuUI(MainMenuType.Top) as TopMenuUI;
-        int menuIndex = (int) MainMenuType.Stage;
+        var topUI = main.ui.GetMenuUI(MenuType.Top) as TopMenuUI;
+        int menuIndex = (int) MenuType.Stage;
         main.ui.selectMainMenuUI.selectStageMenuRowUI.SetupMain(menuIndex, main.useCase.handleMenu.OnSelectMainMenu);
     }
 }

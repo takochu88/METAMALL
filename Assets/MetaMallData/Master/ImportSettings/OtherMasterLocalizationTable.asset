@@ -13,35 +13,71 @@ MonoBehaviour:
   m_Name: OtherMasterLocalizationTable
   m_EditorClassIdentifier: Assembly-CSharp::LocalizationTable
   rows:
-  - key: ui-title-top-menu
+  - key: ui-title-inventory
+    index: 0
+    ja: "\u30A4\u30F3\u30D9\u30F3\u30C8\u30EA"
+    en: 
+  - key: display-type-currency
+    index: 0
+    ja: "\u901A\u8CA8"
+    en: 
+  - key: display-type-ticket
+    index: 0
+    ja: "\u30C1\u30B1\u30C3\u30C8"
+    en: 
+  - key: display-type-other
+    index: 0
+    ja: "\u8CB4\u91CD\u54C1"
+    en: 
+  - key: display-type-use
+    index: 0
+    ja: "\u6D88\u8017\u54C1"
+    en: 
+  - key: name-mm-top
     index: 0
     ja: "\u30C8\u30C3\u30D7"
     en: 
-  - key: ui-title-stage-menu
+  - key: name-mm-stage
     index: 0
     ja: "\u30D0\u30C8\u30EB"
     en: 
-  - key: ui-title-game-event-menu
+  - key: name-mm-game-event
     index: 0
     ja: "\u30A4\u30D9\u30F3\u30C8"
     en: 
-  - key: ui-title-purchase-menu
+  - key: name-mm-purchase
     index: 0
     ja: "\u8CFC\u5165"
     en: 
-  - key: ui-title-gacha-menu
+  - key: name-mm-gacha
     index: 0
     ja: "\u30AC\u30C1\u30E3"
     en: 
-  - key: ui-title-mail-menu
+  - key: name-mm-story
+    index: 0
+    ja: "\u30B9\u30C8\u30FC\u30EA\u30FC"
+    en: 
+  - key: name-sm-mail
     index: 0
     ja: "\u30E1\u30FC\u30EB"
     en: 
-  - key: ui-title-character-menu
+  - key: name-sm-notice
+    index: 0
+    ja: "\u544A\u77E5"
+    en: 
+  - key: name-sm-config
+    index: 0
+    ja: "\u8A2D\u5B9A"
+    en: 
+  - key: name-sm-inventory
+    index: 0
+    ja: "\u5009\u5EAB"
+    en: 
+  - key: name-sm-custom-character
     index: 0
     ja: "\u30AD\u30E3\u30E9\u30AF\u30BF\u30FC"
     en: 
-  - key: ui-title-formation-menu
+  - key: name-sm-formation
     index: 0
     ja: "\u30D5\u30A9\u30FC\u30E1\u30FC\u30B7\u30E7\u30F3"
     en: 

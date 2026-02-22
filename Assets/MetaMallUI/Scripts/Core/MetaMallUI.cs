@@ -22,9 +22,9 @@ public class MetaMallUI : MonoBehaviour
 
     }
 
-    public MenuUIBase GetMenuUI(MainMenuType mainMenuType)
+    public MenuUIBase GetMenuUI(MenuType menuType)
     {
-        return menuUIs[(int)mainMenuType];
+        return menuUIs[(int)menuType];
     }
 
     public bool IsInteractable => canvasGroup.interactable;

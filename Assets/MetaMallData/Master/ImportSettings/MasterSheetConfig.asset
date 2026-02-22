@@ -36,7 +36,7 @@ MonoBehaviour:
   - sheetCategory: 5
     spreadsheetId: 
     gid: 0
-    outputTable: {fileID: 11400000, guid: 4fa3de604bd6e634f830da4f6b693d4f, type: 2}
+    outputTable: {fileID: 0}
   - sheetCategory: 5
     spreadsheetId: 
     gid: 0
@@ -113,3 +113,11 @@ MonoBehaviour:
     spreadsheetId: 1s08kLd8aivKxznINIGYY0OxPmae3ok-ovKQipkSN_sQ
     gid: 801888263
     outputTable: {fileID: 11400000, guid: 1e7d4e9225d25e642a47677637f14877, type: 2}
+  - sheetCategory: 1
+    spreadsheetId: 1s08kLd8aivKxznINIGYY0OxPmae3ok-ovKQipkSN_sQ
+    gid: 1732262286
+    outputTable: {fileID: 11400000, guid: cc06dd06130a4414cb9494f0d21ad890, type: 2}
+  - sheetCategory: 9
+    spreadsheetId: 1I5MgA6BICe62AaSlttxW7qy-AA-P5akUUWUm4THKsLM
+    gid: 31460638
+    outputTable: {fileID: 11400000, guid: b50bf7b9f1a955f4284266bb5964c33b, type: 2}

@@ -1,6 +1,9 @@
+using Cysharp.Threading.Tasks;
 using PrimeTween;
 using Sirenix.OdinInspector;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Canvas))]
 [RequireComponent(typeof(CanvasGroup))]
@@ -17,23 +20,40 @@ public class OverlayUIBase : MonoBehaviour
     [SerializeField] Ease hideEase = Ease.InCubic;
 
     [FoldoutGroup("Blur")]
-    [SerializeField] bool useBlur;
+    [SerializeField] bool useBlur = true;
     [FoldoutGroup("Blur")]
     [ShowIf("useBlur")]
     [SerializeField] BlurBackground blurBackground;
+    
 
     Color darkColor = new Color(0f, 0f, 0f, 220f / 255f);
 
+    [SerializeField] protected TMP_Text titleText;
+
     [FoldoutGroup("Close")]
+    [SerializeField] CloseType closeType = CloseType.Button;
+    [FoldoutGroup("Close")]
+    [ShowIf("closeType", CloseType.Button)]
     [SerializeField] MyButton closeButton;
+    [FoldoutGroup("Close")]
+    [ShowIf("closeType", CloseType.Screen)]
+    [SerializeField] Button closeScreen;
+    [FoldoutGroup("Close")]
+    [ShowIf("closeType", CloseType.Screen)]
+    [SerializeField] GameObject closeLabel;
+
+    public enum CloseType { Button, Screen, None }
+    public TMP_Text TitleText => titleText;
+    public Button CloseScreen => closeScreen;
 
     // ── 状態 ─────────────────────────────────
     enum State { Hidden = 0, Shown = 1 }
 
     [SerializeField, ReadOnly] State currentState;
-    Tween tween;
-    bool isFragile;
-    OverlayStack parentStack;
+    private Tween tween;
+    private bool isFragile;
+    private OverlayStack parentStack;
+    private UniTaskCompletionSource hideTcs;
 
     // ── キャッシュ ───────────────────────────
     Canvas _canvas;
@@ -51,10 +71,30 @@ public class OverlayUIBase : MonoBehaviour
     {
         parentStack = parent;
         CreateDarkImage();
+        ApplyCloseType();
         canvas.enabled = false;
         canvasGroup.alpha = 0f;
         canvasGroup.blocksRaycasts = false;
         currentState = State.Hidden;
+    }
+
+    void ApplyCloseType()
+    {
+        if (closeButton != null)
+            closeButton.gameObject.SetActiveIfChanged(closeType == CloseType.Button);
+
+        if (closeScreen != null)
+        {
+            closeScreen.gameObject.SetActiveIfChanged(closeType == CloseType.Screen);
+            if (closeType == CloseType.Screen)
+            {
+                closeScreen.onClick.RemoveAllListeners();
+                closeScreen.onClick.AddListener(Hide);
+            }
+        }
+
+        if (closeLabel != null)
+            closeLabel.SetActive(closeType == CloseType.Screen);
     }
 
     void CreateDarkImage()
@@ -106,6 +146,14 @@ public class OverlayUIBase : MonoBehaviour
         }
     }
 
+    /// <summary> Show して Hide されるまで待機する </summary>
+    public async UniTask ShowAsync()
+    {
+        hideTcs = new UniTaskCompletionSource();
+        Show();
+        await hideTcs.Task;
+    }
+
     public void ShowImmediate()
     {
         if (IsShown) return;
@@ -143,6 +191,7 @@ public class OverlayUIBase : MonoBehaviour
         if (!IsShown) return;
         currentState = State.Hidden;
         tween.Stop();
+        HideCloseLabel();
         canvasGroup.blocksRaycasts = false;
 
         tween = PlayHide()
@@ -155,6 +204,7 @@ public class OverlayUIBase : MonoBehaviour
 
                 self.parentStack.Remove(self);
                 self.OnAfterHide();
+                self.CompleteHideTcs();
 
                 if (self.isFragile)
                     Destroy(self.gameObject);
@@ -166,6 +216,7 @@ public class OverlayUIBase : MonoBehaviour
         if (!IsShown) return;
         currentState = State.Hidden;
         tween.Stop();
+        HideCloseLabel();
         canvasGroup.blocksRaycasts = false;
         canvasGroup.alpha = 0f;
         canvas.enabled = false;
@@ -175,14 +226,36 @@ public class OverlayUIBase : MonoBehaviour
 
         parentStack.Remove(this);
         OnAfterHide();
+        CompleteHideTcs();
 
         if (isFragile)
             Destroy(gameObject);
     }
 
+    private void CompleteHideTcs()
+    {
+        if (hideTcs == null) return;
+        var tcs = hideTcs;
+        hideTcs = null;
+        tcs.TrySetResult();
+    }
+
     // ── 内部設定 ─────────────────────────────
     internal void SetFragile(bool fragile) => isFragile = fragile;
     internal void SetSortingOrder(int order) => canvas.sortingOrder = order;
+
+    // ── CloseLabel 表示制御 ─────────────────
+    public void ShowCloseLabel()
+    {
+        if (closeLabel != null && closeType == CloseType.Screen)
+            closeLabel.SetActiveIfChanged(true);
+    }
+
+    public void HideCloseLabel()
+    {
+        if (closeLabel != null)
+            closeLabel.SetActiveIfChanged(false);
+    }
 
     // ── アニメーション（virtual） ────────────
     protected virtual Tween PlayShow()
@@ -197,7 +270,7 @@ public class OverlayUIBase : MonoBehaviour
 
     // ── ライフサイクルコールバック（virtual） ─
     protected virtual void OnBeforeShow() { }
-    protected virtual void OnAfterShow() { }
+    protected virtual void OnAfterShow() { if(closeType == CloseType.Screen) ShowCloseLabel(); }
     public virtual void OnActivated() { }
     public virtual void OnDeactivated() { }
     protected virtual void OnAfterHide() { }
@@ -208,8 +281,33 @@ public class OverlayUIBase : MonoBehaviour
     }
 
 #if UNITY_EDITOR
+    protected virtual void OnValidate()
+    {
+        // TitleText 自動登録
+        if (titleText == null)
+            AutoAssignTitleText();
+
+        // CloseLabel 自動登録
+        if (closeLabel == null)
+        {
+            var blink = GetComponentInChildren<BlinkTMP>(true);
+            if (blink != null)
+                closeLabel = blink.gameObject;
+        }
+
+        if (closeButton != null)
+            closeButton.gameObject.SetActive(closeType == CloseType.Button);
+        if (closeScreen != null)
+            closeScreen.gameObject.SetActive(closeType == CloseType.Screen);
+        if (closeLabel != null)
+            closeLabel.SetActive(closeType == CloseType.Screen);
+    }
+
     protected virtual void Reset()
     {
+        // TitleText 自動登録
+        AutoAssignTitleText();
+
         var found = GetComponentsInChildren<MyButton>(true);
         foreach (var btn in found)
         {
@@ -217,6 +315,41 @@ public class OverlayUIBase : MonoBehaviour
             {
                 closeButton = btn;
                 SetPersistentOnClick(btn);
+                break;
+            }
+        }
+
+        // CloseScreen 自動登録
+        if (closeScreen == null)
+        {
+            var screens = GetComponentsInChildren<Button>(true);
+            foreach (var s in screens)
+            {
+                if (s.gameObject.name == "CloseScreen")
+                {
+                    closeScreen = s;
+                    break;
+                }
+            }
+        }
+
+        // CloseLabel 自動登録（BlinkTMP 付きオブジェクトを探す）
+        if (closeLabel == null)
+        {
+            var blink = GetComponentInChildren<BlinkTMP>(true);
+            if (blink != null)
+                closeLabel = blink.gameObject;
+        }
+    }
+
+    void AutoAssignTitleText()
+    {
+        var texts = GetComponentsInChildren<TMP_Text>(true);
+        foreach (var t in texts)
+        {
+            if (t.gameObject.name == "TitleText")
+            {
+                titleText = t;
                 break;
             }
         }

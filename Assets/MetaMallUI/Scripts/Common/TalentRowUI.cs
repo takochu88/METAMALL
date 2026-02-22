@@ -16,6 +16,16 @@ public class TalentRowUI : MonoBehaviour
     private int index;
     private Action<int> onUpgrade;
 
+    public void Setup()
+    {
+        
+    }
+
+    public void UpdateUI(int value)
+    {
+        baseValueLabel.text = value.ToString();
+    }
+    
     public void SetData(string name, int baseValue, int bonusValue, int maxValue, bool canUpgrade)
     {
         nameLabel.text = name;

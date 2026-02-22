@@ -12,7 +12,26 @@
       "Bash(node:*)",
       "Bash(npm:*)",
       "Bash(uloop skills install:*)",
-      "Bash(uloop compile:*)"
+      "Bash(uloop compile:*)",
+      "Bash(uloop execute-dynamic-code:*)",
+      "Bash(uloop find-game-objects:*)",
+      "Bash(uloop get-hierarchy:*)",
+      "mcp__uLoopMCP__find-game-objects",
+      "mcp__uLoopMCP__compile",
+      "mcp__uLoopMCP__capture-window",
+      "mcp__uLoopMCP__get-logs",
+      "mcp__uLoopMCP__execute-dynamic-code",
+      "WebSearch",
+      "Bash(gh api:*)",
+      "WebFetch(domain:api.github.com)",
+      "mcp__uLoopMCP__get-hierarchy",
+      "mcp__uLoopMCP__clear-console",
+      "mcp__uLoopMCP__control-play-mode",
+      "mcp__uLoopMCP__unity-search"
     ]
-  }
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "uLoopMCP"
+  ]
 }

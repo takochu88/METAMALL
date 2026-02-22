@@ -17,4 +17,9 @@ public class BadgeUI : MonoBehaviour
     {
         transform.localScale = Vector3.one;
     }
+
+    public void SetVisible(bool visible)
+    {
+        gameObject.SetActiveIfChanged(visible);
+    }
 }

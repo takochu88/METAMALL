@@ -1,8 +1,8 @@
 using System;
 
 [Serializable]
-public class MainMenuMaster : MasterBase
+public class MainMenuMaster : MenuBase
 {
-    public FlagType unlockFlag; 
+    public int index;
     public MainMenuUIPosType posType;
 }

@@ -7,7 +7,7 @@ public class UseCase_Purchase : MonoBehaviour
     public void Setup(Main main)
     {
         this.main = main;
-        int menuIndex = (int)MainMenuType.Purchase;
+        int menuIndex = (int)MenuType.Purchase;
         main.ui.selectMainMenuUI.selectPurchaseMenuRowUI.SetupMain(menuIndex, main.useCase.handleMenu.OnSelectMainMenu);
     }
 }
