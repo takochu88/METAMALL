@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using PrimeTween;
+using Sirenix.OdinInspector.Editor.Internal;
 using UnityEngine;
 
 /// <summary>
@@ -74,7 +75,7 @@ public class RewardLineUI : MonoBehaviour
     }
 
     /// <summary>行のデータを設定する。レイアウトは親が LayoutIcons で行う。</summary>
-    public void SetData(List<RewardEntry> rewards, int startIndex, int count, bool canUse = false)
+    public void SetData(List<RewardEntry> rewards, int startIndex, int count, bool canUse = false, bool dark = false)
     {
         for (int i = 0; i < icons.Count; i++)
         {
@@ -85,6 +86,7 @@ public class RewardLineUI : MonoBehaviour
                 icons[i].SetVisible(true);
                 var iconDisplayType = canUse ? RewardIconDisplayType.StockAmount : RewardIconDisplayType.Amount;
                 icons[i].SetData(entry.rewardId, iconDisplayType, entry.amount);
+                icons[i].SetVisibleDark(dark);
             }
             else
             {
@@ -147,5 +149,19 @@ public class RewardLineUI : MonoBehaviour
     public void SetVisible(bool visible)
     {
         gameObject.SetActiveIfChanged(visible);
+    }
+    
+    public void AllSetVisibleDark(bool visible)
+    {
+        for (int i = 0; i < icons.Count; i++)
+        {
+            int index = i;
+            SetVisibleDark(index, visible);
+        }
+    }
+
+    public void SetVisibleDark(int index, bool visible)
+    {
+        icons[index].SetVisible(visible);
     }
 }

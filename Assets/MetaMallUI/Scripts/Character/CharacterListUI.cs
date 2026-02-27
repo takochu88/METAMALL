@@ -9,8 +9,8 @@ public class CharacterListUI : MonoBehaviour
 
     private int SelectedIndex
     {
-        get => Mgr.Save.SessionData.selectedCharacterIndex;
-        set => Mgr.Save.SessionData.selectedCharacterIndex = value;
+        get => Mgr.Save.SessionData.GetIndex(MenuType.CustomCharacter, -1);
+        set => Mgr.Save.SessionData.SetIndex(MenuType.CustomCharacter, value);
     }
 
     public void Setup(Action<int> onSelectCharacter)
@@ -34,7 +34,7 @@ public class CharacterListUI : MonoBehaviour
             cell => cell.Get<CharacterCellUI>().Init(OnSelect),
             (index, cell) =>
             {
-                var row = cell.Get<CharacterCellUI>();
+                var row = (CharacterCellUI)cell;
                 row.SetData(characters[index]);
                 row.SetSelected(characters[index].Master.index == SelectedIndex);
             }

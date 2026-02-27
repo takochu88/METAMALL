@@ -73,3 +73,39 @@ MonoBehaviour:
     index: 0
     ja: "\u30A2\u30A4\u30C6\u30E0\u3092\u4F7F\u7528\u3057\u307E\u3057\u305F"
     en: 
+  - key: ui-expire-in-days-hours
+    index: 0
+    ja: "{0}\u65E5{1}\u6642\u9593\u3067\u671F\u9650\u5207\u308C"
+    en: 
+  - key: ui-expire-in-hours
+    index: 0
+    ja: "{0}\u6642\u9593\u3067\u671F\u9650\u5207\u308C"
+    en: 
+  - key: ui-expired
+    index: 0
+    ja: "\u671F\u9650\u5207\u308C"
+    en: 
+  - key: ui-no-expiration
+    index: 0
+    ja: "\u7121\u671F\u9650"
+    en: 
+  - key: ui-receive
+    index: 0
+    ja: "\u53D7\u3051\u53D6\u308B"
+    en: 
+  - key: ui-received
+    index: 0
+    ja: "\u53D7\u3051\u53D6\u308A\u6E08\u307F"
+    en: 
+  - key: ui-already-received
+    index: 0
+    ja: "\u65E2\u306B\u53D7\u3051\u53D6\u308A\u6E08\u307F\u3067\u3059\u3002"
+    en: 
+  - key: ui-mail-count
+    index: 0
+    ja: "{0}\u901A"
+    en: 
+  - key: ui-cannot-receive-capacity
+    index: 0
+    ja: "\u6240\u6301\u4E0A\u9650\u3092\u8D85\u904E\u3059\u308B\u30A2\u30A4\u30C6\u30E0\u304C\u3042\u308B\u305F\u3081\u3001\u53D7\u3051\u53D6\u308C\u307E\u305B\u3093\u3067\u3057\u305F\u3002"
+    en: 

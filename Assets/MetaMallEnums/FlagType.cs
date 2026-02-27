@@ -9,6 +9,8 @@
     Unlock_GameEventMenu = 102,
     Unlock_PurchaseMenu = 103,
     Unlock_GachaMenu = 104,
+    Unlock_StoryMenu = 105,
+    Unlock_ArcadeMenu = 106,
     
     //サブメニューのアンロックフラグ 200~
     Unlock_MailMenu = 200,
@@ -17,4 +19,6 @@
     Unlock_InventoryMenu　 = 203,
     Unlock_CustomCharacter = 204,
     Unlock_Formation = 205,
+    Unlock_MetaTask = 206,
+    Unlock_MetaPatrol = 207,
 }

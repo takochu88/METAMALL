@@ -7,6 +7,8 @@ public class FooterMenuUI : MonoBehaviour
     [SerializeField] TMP_Text menuTitleText;
     [SerializeField] float fadeDuration = 0.2f;
     [SerializeField] Ease fadeEase = Ease.OutCubic;
+    
+    public StabilityUI stabilityUI;
 
     Tween tween;
 

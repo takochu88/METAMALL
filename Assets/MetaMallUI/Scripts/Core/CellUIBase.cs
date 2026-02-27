@@ -2,18 +2,16 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public abstract class CellUIBase : MonoBehaviour
+public abstract class CellUIBase : MyScrollCell
 {
     [SerializeField] private TMP_Text title;
-    [SerializeField] private MyButton button;
     [SerializeField] private BadgeUI badgeUI;
     [SerializeField] private Image background;
 
-    public static readonly Color NormalColor = Color.white;
-    public static readonly Color SelectedColor = Color.deepSkyBlue;
+    public static readonly Color NormalColor = new Color(1f, 1f, 1f, 0.5f);
+    public static readonly Color SelectedColor = new Color(0f, 0.75f, 1f, 0.5f);
 
     protected TMP_Text Title => title;
-    protected MyButton Button => button;
     protected BadgeUI BadgeUI => badgeUI;
     protected Image Background => background;
 
@@ -28,4 +26,5 @@ public abstract class CellUIBase : MonoBehaviour
         if (badgeUI != null)
             badgeUI.gameObject.SetActiveIfChanged(visible);
     }
+
 }

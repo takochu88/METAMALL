@@ -87,4 +87,78 @@ public class PlayFabManager : MonoBehaviour
                 onError?.Invoke(error.GenerateErrorReport());
             });
     }
+
+    // ── Stability（スタミナ） ────────────────────────────
+
+    /// <summary> スタミナの現在値・上限・回復時間をサーバーから取得する </summary>
+    public void FetchStability(Action onSuccess = null, Action<string> onError = null)
+    {
+        PlayFabClientAPI.GetUserInventory(new GetUserInventoryRequest(),
+            result =>
+            {
+                string code = StabilityData.CurrencyCode;
+                int amount = result.VirtualCurrency.TryGetValue(code, out var val) ? val : 0;
+                int max = 100;
+                int seconds = 0;
+
+                if (result.VirtualCurrencyRechargeTimes.TryGetValue(code, out var recharge))
+                {
+                    max = recharge.RechargeMax;
+                    seconds = recharge.SecondsToRecharge;
+                }
+
+                Mgr.Save.StabilityData.Apply(amount, max, seconds);
+                Debug.Log($"[PlayFab] Stability 取得成功: {amount}/{max}");
+                onSuccess?.Invoke();
+            },
+            error =>
+            {
+                Debug.LogError($"[PlayFab] Stability 取得失敗: {error.GenerateErrorReport()}");
+                onError?.Invoke(error.GenerateErrorReport());
+            });
+    }
+
+    /// <summary> スタミナを消費する </summary>
+    public void ConsumeStability(int amount, Action onSuccess = null, Action<string> onError = null)
+    {
+        var request = new SubtractUserVirtualCurrencyRequest
+        {
+            VirtualCurrency = StabilityData.CurrencyCode,
+            Amount = amount,
+        };
+        PlayFabClientAPI.SubtractUserVirtualCurrency(request,
+            result =>
+            {
+                Mgr.Save.StabilityData.SetBalance(result.Balance);
+                Debug.Log($"[PlayFab] Stability 消費成功: -{amount} → 残{result.Balance}");
+                onSuccess?.Invoke();
+            },
+            error =>
+            {
+                Debug.LogError($"[PlayFab] Stability 消費失敗: {error.GenerateErrorReport()}");
+                onError?.Invoke(error.GenerateErrorReport());
+            });
+    }
+
+    /// <summary> スタミナを追加する（アイテム回復等） </summary>
+    public void AddStability(int amount, Action onSuccess = null, Action<string> onError = null)
+    {
+        var request = new AddUserVirtualCurrencyRequest
+        {
+            VirtualCurrency = StabilityData.CurrencyCode,
+            Amount = amount,
+        };
+        PlayFabClientAPI.AddUserVirtualCurrency(request,
+            result =>
+            {
+                Mgr.Save.StabilityData.SetBalance(result.Balance);
+                Debug.Log($"[PlayFab] Stability 追加成功: +{amount} → 残{result.Balance}");
+                onSuccess?.Invoke();
+            },
+            error =>
+            {
+                Debug.LogError($"[PlayFab] Stability 追加失敗: {error.GenerateErrorReport()}");
+                onError?.Invoke(error.GenerateErrorReport());
+            });
+    }
 }

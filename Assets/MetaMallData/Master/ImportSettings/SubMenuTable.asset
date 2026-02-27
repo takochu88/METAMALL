@@ -14,26 +14,58 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SubMenuTable
   rows:
   - key: sm-mail
-    menuType: 6
+    menuType: 100
     unlockFlag: 200
     index: 0
   - key: sm-notice
-    menuType: 7
+    menuType: 101
     unlockFlag: 201
     index: 1
   - key: sm-config
-    menuType: 8
+    menuType: 102
     unlockFlag: 202
     index: 2
   - key: sm-inventory
-    menuType: 9
+    menuType: 103
     unlockFlag: 203
     index: 3
   - key: sm-custom-character
-    menuType: 10
+    menuType: 104
     unlockFlag: 204
     index: 4
   - key: sm-formation
-    menuType: 11
+    menuType: 105
     unlockFlag: 205
     index: 5
+  - key: sm-meta-task
+    menuType: 106
+    unlockFlag: 206
+    index: 6
+  - key: sm-meta-patrol
+    menuType: 107
+    unlockFlag: 207
+    index: 7
+  - key: sm-collection
+    menuType: 109
+    unlockFlag: 0
+    index: 8
+  - key: sm-mission
+    menuType: 110
+    unlockFlag: 0
+    index: 9
+  - key: sm-shop
+    menuType: 111
+    unlockFlag: 0
+    index: 10
+  - key: sm-season-pass
+    menuType: 112
+    unlockFlag: 0
+    index: 11
+  - key: sm-tips
+    menuType: 108
+    unlockFlag: 0
+    index: 12
+  - key: sm-login-bonus
+    menuType: 113
+    unlockFlag: 0
+    index: 13

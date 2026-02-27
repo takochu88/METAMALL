@@ -74,16 +74,24 @@ public class UseCase_Reward : MonoBehaviour
         AddRewardsAsync(entries, isActive);
     }
     
-    public async UniTask AddRewardsAsync(List<RewardEntry> entries, bool isActive)
+    public async UniTask AddRewardsAsync(List<RewardEntry> entries, bool isActive, bool rejectOverflow = false)
     {
         // 不正データチェック（1個でもNGなら即終了）
         if (!ValidateEntries(entries)) return;
-
+        
         // 能動的な受け取り → オーバーフローチェック
         if (isActive)
         {
             List<RewardEntry> pendingOverflows = new();
             pendingOverflows.AddRange(GetOverflows(entries));
+
+            // 超過を許さないモード → 1個でも超過があればトーストで即終了
+            if (rejectOverflow && pendingOverflows.Count > 0)
+            {
+                Mgr.Toast.Show(Mgr.Local.Get("ui-cannot-receive-capacity"));
+                return;
+            }
+            
             
             if (pendingOverflows.Count > 0)
             {
@@ -104,8 +112,6 @@ public class UseCase_Reward : MonoBehaviour
     
     void ApplyRewards(List<RewardEntry> entries)
     {
-        bool hadNewUseItem = Mgr.Save.RewardStockData.HasNewUseItem;
-
         foreach (var entry in entries)
         {
             Mgr.Master.TryGetReward(entry.rewardId, out RewardBase reward);
@@ -131,9 +137,6 @@ public class UseCase_Reward : MonoBehaviour
                     break;
             }
         }
-
-        if (!hadNewUseItem && Mgr.Save.RewardStockData.HasNewUseItem)
-            main.useCase.inventory.OnRefresh();
     }
 
 

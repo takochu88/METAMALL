@@ -17,11 +17,34 @@ public class RewardStockData
 
     private readonly HashSet<int> newUseItemIds = new();
 
+    /// <summary> newUseItemIds が変化したときに発火 </summary>
+    public event Action OnNewUseItemsChanged;
+
     public bool HasNewUseItem => newUseItemIds.Count > 0;
-    public void AddNewUseItem(int rewardId) => newUseItemIds.Add(rewardId);
+
+    public void AddNewUseItem(int rewardId)
+    {
+        if (newUseItemIds.Add(rewardId))
+            OnNewUseItemsChanged?.Invoke();
+    }
+
     public bool IsNewUseItem(int rewardId) => newUseItemIds.Contains(rewardId);
-    public bool RemoveNewUseItem(int rewardId) => newUseItemIds.Remove(rewardId);
-    public void ClearNewUseItems() => newUseItemIds.Clear();
+
+    public bool RemoveNewUseItem(int rewardId)
+    {
+        bool removed = newUseItemIds.Remove(rewardId);
+        if (removed) OnNewUseItemsChanged?.Invoke();
+        return removed;
+    }
+
+    public void ClearNewUseItems()
+    {
+        if (newUseItemIds.Count > 0)
+        {
+            newUseItemIds.Clear();
+            OnNewUseItemsChanged?.Invoke();
+        }
+    }
 
     public Stock GetStock(RewardDisplayType type) => stocks[type];
 

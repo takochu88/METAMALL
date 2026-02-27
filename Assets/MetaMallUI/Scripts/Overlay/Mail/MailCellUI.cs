@@ -1,30 +1,30 @@
-using System;
 using TMPro;
 using UnityEngine;
 
 public class MailCellUI : CellUIBase
 {
-    [SerializeField] private TMP_Text dateLabel;
+    [SerializeField] private TMP_Text remainingTimeText;
+    [SerializeField] private RewardIconUI rewardIconUI;
+    [SerializeField] private TMP_Text moreText;
 
-    private Action<int> onClick;
-    private int index;
-
-    public void Init(Action<int> onClick)
+    public void SetData(OneMailTitleOneData mail, bool received, bool read)
     {
-        this.onClick = onClick;
-        Button.SetOnClick(OnClick);
-    }
-
-    public void SetData(int index, MailItem mail, bool claimed)
-    {
-        this.index = index;
         Title.text = mail.Title;
-        dateLabel.text = mail.Timestamp.ToString("yyyy/MM/dd");
-        SetBadgeVisible(mail.HasRewards && !claimed);
-    }
+        remainingTimeText.text = MetaMallUtils.ToRemainingTimeString(mail.ExpireAtUtc) ?? "";
+        bool showBadge = mail.HasRewards ? !received : !read;
+        SetBadgeVisible(showBadge);
 
-    private void OnClick()
-    {
-        onClick?.Invoke(index);
+        if (mail.HasRewards)
+        {
+            rewardIconUI.SetVisible(true);
+            rewardIconUI.SetData(mail.rewards[0].rewardId, RewardIconDisplayType.Amount, mail.rewards[0].amount);
+            rewardIconUI.SetVisibleDark(received);
+            moreText.enabled = mail.rewards.Count > 1;
+        }
+        else
+        {
+            rewardIconUI.SetVisible(false);
+            moreText.enabled = false;
+        }
     }
 }

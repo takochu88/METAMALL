@@ -18,5 +18,6 @@ public class UseCase_TopMenu : MonoBehaviour
     public void OnRefresh()
     {
         main.useCase.inventory.OnRefresh();
+        main.useCase.mail.OnRefresh();
     }
 }

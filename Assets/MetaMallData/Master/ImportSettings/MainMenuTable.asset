@@ -40,6 +40,11 @@ MonoBehaviour:
     posType: 0
   - key: mm-story
     menuType: 5
-    unlockFlag: 0
+    unlockFlag: 105
     index: 5
     posType: 2
+  - key: mm-arcade
+    menuType: 6
+    unlockFlag: 106
+    index: 6
+    posType: 0

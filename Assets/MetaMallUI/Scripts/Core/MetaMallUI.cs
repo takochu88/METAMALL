@@ -14,6 +14,7 @@ public class MetaMallUI : MonoBehaviour
     public GameEventMenuUI GameEventMenuUI => menuUIs[2] as GameEventMenuUI;
     public PurchaseMenuUI PurchaseMenuUI => menuUIs[3] as PurchaseMenuUI;
     public GachaMenuUI GachaMenuUI => menuUIs[4] as GachaMenuUI;
+    public ArcadeMenuUI ArcadeMenuUI => menuUIs[5] as ArcadeMenuUI;
     public UpperMenuUI upperMenuUI;
     public FooterMenuUI footerMenuUI;
 

@@ -1,13 +1,13 @@
 using UnityEngine;
 
-public class UseCase_Config : MonoBehaviour
+public class UseCase_Config : UseCase_MenuBase
 {
-    private Main main;
+    protected override MenuType MenuType => MenuType.Config;
 
     public void Setup(Main main)
     {
         this.main = main;
-        main.ui.OverlayStack.configUI.Setup(OnTypeSelected, OnValueChanged, OnButtonClicked);
+        main.ui.OverlayStack.configUI.Setup(OnSelectCell, OnValueChanged, OnButtonClicked);
     }
 
     public void ShowConfig()
@@ -15,9 +15,10 @@ public class UseCase_Config : MonoBehaviour
         main.ui.OverlayStack.configUI.Show();
     }
 
-    private void OnTypeSelected(int typeIndex)
+    protected override void OnSelectCell(int newIndex)
     {
-        Mgr.Save.SessionData.configTypeIndex = typeIndex;
+        base.OnSelectCell(newIndex);
+        main.ui.OverlayStack.configUI.SelectIndex(newIndex);
     }
 
     private void OnValueChanged(string key, float value)

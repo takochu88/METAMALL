@@ -2,63 +2,122 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MailUI : OverlayUIBase
 {
-    [SerializeField] private MyScrollRect scroll;
-
     [Header("詳細")]
-    [SerializeField] private GameObject listPanel;
-    [SerializeField] private GameObject detailPanel;
+    [SerializeField] private TMP_Text mailTitleLabel;
     [SerializeField] private TMP_Text bodyLabel;
     [SerializeField] private TMP_Text dateLabel;
     [SerializeField] private RewardListUI rewardListUI;
-    [SerializeField] private MyButton claimButton;
-    [SerializeField] private TMP_Text claimedLabel;
+    [SerializeField] private MyButton receiveButton;
+    [SerializeField] private TMP_Text receiveLabel;
+    [SerializeField] private Image receiveButtonImage;
+    [SerializeField] private ScrollRect bodyScrollRect;
+    [SerializeField] private MyScrollRect scroll;
+    [SerializeField] private TMP_Text mailCountText;
+    [SerializeField] private float bodyBottomNoRewards;
 
-    private List<MailItem> mails;
-    private Action<int> onMailSelected;
-    private Action<MailItem> onClaim;
-    private int selectedIndex = -1;
+    private IReadOnlyList<OneMailTitleOneData> mails;
+    private Action onHide;
+    private float bodyBottomDefault;
 
-    public void Setup(List<MailItem> mails, Action<int> onMailSelected, Action<MailItem> onClaim)
+    public void Setup(Action<int> onSelectCell, Action onReceive, Action onHide = null)
     {
-        this.mails = mails;
-        this.onMailSelected = onMailSelected;
-        this.onClaim = onClaim;
-        if (claimButton != null) claimButton.SetOnClick(OnClaimClicked);
+        this.onHide = onHide;
+        scroll.InitSelectCell(onSelectCell);
+        if (receiveButton != null) receiveButton.SetOnClick(() => onReceive?.Invoke());
+        if (bodyScrollRect != null)
+            bodyBottomDefault = ((RectTransform)bodyScrollRect.transform).offsetMin.y;
     }
 
-    public void Refresh(List<MailItem> mails)
+    public void Refresh(IReadOnlyList<OneMailTitleOneData> mails)
     {
         this.mails = mails;
-        if (selectedIndex >= 0 && detailPanel != null && detailPanel.activeSelf)
-            ShowDetail(selectedIndex);
-        else
-            InitScroll();
+        RefreshScroll();
+    }
+
+    public void ShowList()
+    {
+        RefreshScroll();
+        mailCountText.text = Mgr.Local.Format("ui-mail-count", mails.Count);
+    }
+
+    public void ShowDetail(OneMailTitleOneData mail, bool received, int index)
+    {
+        mailTitleLabel.text = mail.Title;
+        bodyLabel.text = mail.body;
+        if (bodyScrollRect != null)
+        {
+            var rt = (RectTransform)bodyScrollRect.transform;
+            float bottom = mail.HasRewards ? bodyBottomDefault : bodyBottomNoRewards;
+            rt.offsetMin = new Vector2(rt.offsetMin.x, bottom);
+
+            bodyScrollRect.velocity = Vector2.zero;
+            bodyScrollRect.verticalNormalizedPosition = 1f;
+            LayoutRebuilder.ForceRebuildLayoutImmediate(bodyScrollRect.content);
+            bool needScroll = bodyScrollRect.content.rect.height > bodyScrollRect.viewport.rect.height;
+            bodyScrollRect.vertical = needScroll;
+            if (bodyScrollRect.verticalScrollbar != null)
+                bodyScrollRect.verticalScrollbar.gameObject.SetActiveIfChanged(needScroll);
+        }
+        dateLabel.text = mail.Timestamp.ToString("yyyy/MM/dd HH:mm");
+
+        if (mail.HasRewards && rewardListUI != null)
+        {
+            rewardListUI.gameObject.SetActiveIfChanged(true);
+            rewardListUI.Setup(mail.rewards, RewardDisplayMode.AllAtOnce, RewardMergeMode.PreMerge, animated: false);
+            receiveButton.gameObject.SetActiveIfChanged(true);
+        }
+        else if (rewardListUI != null)
+        {
+            rewardListUI.gameObject.SetActiveIfChanged(false);
+            receiveButton.gameObject.SetActiveIfChanged(false);
+        }
+
+        UpdateReward(mail, received);
+        scroll.UpdateSelection(index);
+    }
+
+    public void RefreshCell(int index)
+    {
+        var cell = scroll.FindVisibleCell(index);
+        if (cell != null) OnUpdateCell(index, cell);
+    }
+
+    public void UpdateReward(OneMailTitleOneData mail, bool received)
+    {
+        if (mail.HasRewards && rewardListUI != null)
+        {
+            rewardListUI.gameObject.SetActiveIfChanged(true);
+            rewardListUI.Setup(mail.rewards, RewardDisplayMode.AllAtOnce, RewardMergeMode.PreMerge, animated: false, dark: received);
+            receiveButton.gameObject.SetActiveIfChanged(true);
+        }
+        else if (rewardListUI != null)
+        {
+            rewardListUI.gameObject.SetActiveIfChanged(false);
+            receiveButton.gameObject.SetActiveIfChanged(false);
+        }
+        
+        receiveButtonImage.color = received ? Color.gray2 : Color.deepSkyBlue;
+        receiveLabel.text = received ? Mgr.Local.Get("ui-received") : Mgr.Local.Get("ui-receive");
+    }
+
+    /// <summary> 戻るボタンで一覧に戻る </summary>
+    public void BackToList()
+    {
+        ShowList();
     }
 
     protected override void OnAfterShow()
     {
+        base.OnAfterShow();
         Canvas.ForceUpdateCanvases();
         ShowList();
     }
 
-    protected override void OnAfterHide()
-    {
-        selectedIndex = -1;
-    }
-
-    // ── 一覧 ──────────────────────────────
-    private void ShowList()
-    {
-        if (listPanel != null) listPanel.SetActiveIfChanged(true);
-        if (detailPanel != null) detailPanel.SetActiveIfChanged(false);
-        selectedIndex = -1;
-        InitScroll();
-    }
-
-    private void InitScroll()
+    private void RefreshScroll()
     {
         if (mails == null || mails.Count == 0)
         {
@@ -66,64 +125,22 @@ public class MailUI : OverlayUIBase
             return;
         }
 
-        scroll.Init(mails.Count,
-            cell =>
-            {
-                cell.Get<MailCellUI>().Init(OnRowClicked);
-            },
-            (index, cell) =>
-            {
-                var mail = mails[index];
-                bool claimed = Mgr.Save.MailSaveData.IsClaimed(mail.NewsId);
-                cell.Get<MailCellUI>().SetData(index, mail, claimed);
-            });
+        scroll.Init(mails.Count, OnUpdateCell);
+        scroll.UpdateSelection(Mgr.Save.SessionData.GetIndex(MenuType.Mail));
     }
 
-    private void OnRowClicked(int index)
+    private void OnUpdateCell(int index, MyScrollCell cell)
     {
-        onMailSelected?.Invoke(index);
-    }
-
-    // ── 詳細 ──────────────────────────────
-    public void ShowDetail(int index)
-    {
-        if (index < 0 || index >= mails.Count) return;
-        selectedIndex = index;
+        var row = (MailCellUI)cell;
         var mail = mails[index];
-
-        if (listPanel != null) listPanel.SetActiveIfChanged(false);
-        if (detailPanel != null) detailPanel.SetActiveIfChanged(true);
-
-        TitleText.text = mail.Title;
-        bodyLabel.text = mail.Body;
-        dateLabel.text = mail.Timestamp.ToString("yyyy/MM/dd HH:mm");
-
-        bool claimed = Mgr.Save.MailSaveData.IsClaimed(mail.NewsId);
-        bool canClaim = mail.HasRewards && !claimed && !mail.IsExpired;
-
-        if (mail.HasRewards && rewardListUI != null)
-        {
-            rewardListUI.gameObject.SetActiveIfChanged(true);
-            rewardListUI.Setup(mail.Rewards, RewardDisplayMode.AllAtOnce, RewardMergeMode.PreMerge);
-        }
-        else if (rewardListUI != null)
-        {
-            rewardListUI.gameObject.SetActiveIfChanged(false);
-        }
-
-        if (claimButton != null) claimButton.gameObject.SetActiveIfChanged(canClaim);
-        if (claimedLabel != null) claimedLabel.gameObject.SetActiveIfChanged(claimed);
+        bool received = Mgr.Save.MailSaveData.IsReceived(mail.NewsId);
+        bool read = Mgr.Save.MailSaveData.IsRead(mail.NewsId);
+        row.SetData(mail, received, read);
     }
 
-    private void OnClaimClicked()
+    protected override void OnAfterHide()
     {
-        if (selectedIndex < 0 || selectedIndex >= mails.Count) return;
-        onClaim?.Invoke(mails[selectedIndex]);
-    }
-
-    /// <summary> 戻るボタンで一覧に戻る </summary>
-    public void BackToList()
-    {
-        ShowList();
+        base.OnAfterHide();
+        onHide?.Invoke();
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 /// <summary>
@@ -6,14 +7,23 @@ using UnityEngine;
 /// </summary>
 public class MyScrollCell : MonoBehaviour
 {
+    [SerializeField] private MyButton button;
     public int Index { get; internal set; } = -1;
     public RectTransform RectTransform { get; private set; }
 
     Component cachedRow;
+    private Action<int> onSelectCell;
 
-    void Awake()
+    protected MyButton Button => button;
+
+    protected virtual void Awake()
     {
         RectTransform = (RectTransform)transform;
+
+        if (button != null)
+        {
+            button.SetOnClick(OnClick);
+        }
     }
 
     /// <summary>
@@ -26,5 +36,15 @@ public class MyScrollCell : MonoBehaviour
         t = GetComponent<T>();
         cachedRow = t;
         return t;
+    }
+
+    public void InitSelectCell(Action<int> onSelectCell)
+    {
+        this.onSelectCell = onSelectCell;
+    }
+
+    private void OnClick()
+    {
+        onSelectCell?.Invoke(Index);
     }
 }

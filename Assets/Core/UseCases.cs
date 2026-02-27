@@ -7,6 +7,7 @@ using UnityEditor;
 
 public class UseCases : MonoBehaviour
 {
+    [BoxGroup("コア")]    public UseCase_TitleData titleData;
     [BoxGroup("コア")]    public UseCase_Config config;
 
     [BoxGroup("システム")] public UseCase_Popup popup;
@@ -24,6 +25,13 @@ public class UseCases : MonoBehaviour
     [BoxGroup("コンテンツ")] public UseCase_Mission mission;
     [BoxGroup("コンテンツ")] public UseCase_GameEvent gameEvent;
     [BoxGroup("コンテンツ")] public UseCase_Mail mail;
+    [BoxGroup("コンテンツ")] public UseCase_MetaTask metaTask;
+    [BoxGroup("コンテンツ")] public UseCase_Patrol patrol;
+    [BoxGroup("コンテンツ")] public UseCase_Arcade arcade;
+    [BoxGroup("コンテンツ")] public UseCase_Stability stability;
+    [BoxGroup("コンテンツ")] public UseCase_Collection collection;
+    [BoxGroup("コンテンツ")] public UseCase_SeasonPass seasonPass;
+    [BoxGroup("コンテンツ")] public UseCase_LoginBonus loginBonus;
 
     [BoxGroup("キャラクター")] public UseCase_CustomCharacter customCharacter;
     [BoxGroup("キャラクター")] public UseCase_Formation formation;
@@ -39,6 +47,7 @@ public class UseCases : MonoBehaviour
 
     public void Setup(Main main)
     {
+        titleData.Setup(main);
         popup.Setup(main);
         tips.Setup(main);
         config.Setup(main);
@@ -60,6 +69,13 @@ public class UseCases : MonoBehaviour
         displayItem.Setup(main);
         inventory.Setup(main);
         mail.Setup(main);
+        metaTask.Setup(main);
+        patrol.Setup(main);
+        arcade.Setup(main);
+        stability.Setup(main);
+        collection.Setup(main);
+        seasonPass.Setup(main);
+        loginBonus.Setup(main);
         debug.Setup(main);
     }
 
@@ -70,6 +86,7 @@ public class UseCases : MonoBehaviour
     {
         int order = 0;
         // スクリプトのフィールド順 = ヒエラルキー順
+        titleData = GetOrCreate<UseCase_TitleData>("TitleData", order++);
         config    = GetOrCreate<UseCase_Config>("Config", order++);
         popup     = GetOrCreate<UseCase_Popup>("Popup", order++);
         tips      = GetOrCreate<UseCase_Tips>("Tips", order++);
@@ -83,6 +100,13 @@ public class UseCases : MonoBehaviour
         mission   = GetOrCreate<UseCase_Mission>("Mission", order++);
         gameEvent = GetOrCreate<UseCase_GameEvent>("GameEvent", order++);
         mail      = GetOrCreate<UseCase_Mail>("Mail", order++);
+        metaTask  = GetOrCreate<UseCase_MetaTask>("MetaTask", order++);
+        patrol    = GetOrCreate<UseCase_Patrol>("Patrol", order++);
+        arcade    = GetOrCreate<UseCase_Arcade>("Arcade", order++);
+        stability = GetOrCreate<UseCase_Stability>("Stability", order++);
+        collection = GetOrCreate<UseCase_Collection>("Collection", order++);
+        seasonPass = GetOrCreate<UseCase_SeasonPass>("SeasonPass", order++);
+        loginBonus = GetOrCreate<UseCase_LoginBonus>("LoginBonus", order++);
         customCharacter = GetOrCreate<UseCase_CustomCharacter>("CustomCharacter", order++);
         formation = GetOrCreate<UseCase_Formation>("Formation", order++);
         parallel  = GetOrCreate<UseCase_Parallel>("Parallel", order++);

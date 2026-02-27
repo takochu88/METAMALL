@@ -1,132 +1,94 @@
-using System;
 using System.Collections.Generic;
-using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-public class UseCase_Mail : MonoBehaviour
+public class UseCase_Mail : UseCase_MenuBase
 {
-    private Main main;
-    private readonly List<MailItem> mails = new();
+    protected override MenuType MenuType => MenuType.Mail;
 
-    public IReadOnlyList<MailItem> Mails => mails;
+    private MailUI mailUI;
+    private readonly MailTitleData mailData = new();
+
+    public MailTitleData MailData => mailData;
 
     public void Setup(Main main)
     {
         this.main = main;
-        main.ui.upperMenuUI.selectMailUI.SetupSub(ShowMail);
-        main.ui.OverlayStack.mailUI.Setup(mails, OnMailSelected, OnClaimReward);
+        mailUI = main.ui.OverlayStack.mailUI;
+        main.ui.upperMenuUI.selectMailUI.SetupSub(OnShowMail);
+        mailUI.Setup(OnSelectCell, OnReceiveClicked, OnMailHide);
+        main.useCase.titleData.AddListener(OnFetchTitleData);
     }
-
-    /// <summary> PlayFab から TitleNews を取得してメール一覧を更新する </summary>
-    public void FetchMails(Action onComplete = null)
+    
+    private void OnFetchTitleData(IReadOnlyList<PlayFab.ClientModels.TitleNewsItem> newsList)
     {
-        if (!Mgr.PlayFab.IsLoggedIn)
-        {
-            Debug.LogWarning("[Mail] PlayFab 未ログイン");
-            onComplete?.Invoke();
-            return;
-        }
-
-        Mgr.PlayFab.GetTitleNews(
-            newsList =>
-            {
-                mails.Clear();
-                foreach (var news in newsList)
-                {
-                    var mail = ParseNewsItem(news);
-                    if (mail != null && !mail.IsExpired) mails.Add(mail);
-                }
-
-                // 新しい順にソート
-                mails.Sort((a, b) => b.Timestamp.CompareTo(a.Timestamp));
-
-                Debug.Log($"[Mail] パース完了: {mails.Count} 件");
-                onComplete?.Invoke();
-            },
-            error =>
-            {
-                Debug.LogError($"[Mail] 取得失敗: {error}");
-                onComplete?.Invoke();
-            });
+        mailData.Parse(newsList);
+        OnRefresh();
+        Debug.Log($"[Mail] パース完了: {mailData.Count} 件");
     }
-
-    /// <summary> メール一覧を表示する（自動で最新データを取得） </summary>
-    public void ShowMail()
+    
+    public void OnShowMail()
     {
-        Mgr.Loading.Show();
-        FetchMails(() =>
-        {
-            Mgr.Loading.Hide();
-            main.ui.OverlayStack.mailUI.Refresh(mails);
-            main.ui.OverlayStack.mailUI.Show();
-        });
+        if (!main.useCase.titleData.IsFetched) return;
+        mailData.Publish();
+        mailUI.Refresh(mailData.PublishedMails);
+        mailUI.Show();
+        if (mailData.Count > 0) OnSelectCell(SelectedIndex);
     }
 
-    private void OnMailSelected(int index)
+    protected override void OnSelectCell(int index)
     {
-        if (index < 0 || index >= mails.Count) return;
-        main.ui.OverlayStack.mailUI.ShowDetail(index);
+        if (index < 0 || index >= mailData.Count) return;
+        base.OnSelectCell(index);
+        var mail = mailData.PublishedMails[index];
+
+        // 報酬なしメールは選択時に既読にする
+        if (!mail.HasRewards)
+            Mgr.Save.MailSaveData.MarkRead(mail.NewsId);
+
+        bool received = Mgr.Save.MailSaveData.IsReceived(mail.NewsId);
+        mailUI.RefreshCell(index);
+        mailUI.ShowDetail(mail, received, index);
+        UpdateBadge();
     }
 
-    private async void OnClaimReward(MailItem mail)
+    private void OnReceiveClicked()
+    {
+        if (SelectedIndex < 0 || SelectedIndex >= mailData.Count) return;
+        OnReceiveReward(mailData.PublishedMails[SelectedIndex]);
+    }
+
+    private async void OnReceiveReward(OneMailTitleOneData mail)
     {
         if (mail == null || !mail.HasRewards) return;
-        if (Mgr.Save.MailSaveData.IsClaimed(mail.NewsId)) return;
-
-        // 報酬を付与
-        await main.useCase.reward.AddRewardsAsync(mail.Rewards, isActive: true);
-
-        // 受取済みに記録
-        Mgr.Save.MailSaveData.Claim(mail.NewsId);
-
-        // 報酬取得演出
+       
+        if (Mgr.Save.MailSaveData.IsReceived(mail.NewsId))
+        {
+            Mgr.Toast.Show(Mgr.Local.Get("ui-already-received"));
+            return;
+        }
+        
+        await main.useCase.reward.AddRewardsAsync(mail.rewards, isActive: true, rejectOverflow: true);
+        
+        Mgr.Save.MailSaveData.Receive(mail.NewsId);
         main.useCase.reward.ShowRewards();
-
-        // メール一覧を更新
-        main.ui.OverlayStack.mailUI.Refresh(mails);
+        mailUI.Refresh(mailData.PublishedMails);
+        OnSelectCell(SelectedIndex);
+        UpdateBadge();
     }
-
-    /// <summary> 未受取件数を取得する </summary>
-    public int GetUnclaimedCount()
+    
+    public void OnRefresh()
     {
-        return Mgr.Save.MailSaveData.UnclaimedCount(mails);
+        UpdateBadge();
     }
-
-    private static MailItem ParseNewsItem(PlayFab.ClientModels.TitleNewsItem news)
+    
+    public void UpdateBadge()
     {
-        var mail = new MailItem
-        {
-            NewsId = news.NewsId,
-            Title = news.Title,
-            Timestamp = news.Timestamp,
-        };
-
-        if (string.IsNullOrEmpty(news.Body))
-        {
-            mail.Body = "";
-            mail.Rewards = null;
-            return mail;
-        }
-
-        try
-        {
-            var bodyData = JsonUtility.FromJson<MailBodyData>(news.Body);
-            mail.Body = bodyData.body ?? "";
-            mail.Rewards = bodyData.rewards;
-            if (!string.IsNullOrEmpty(bodyData.expireAt) &&
-                DateTime.TryParse(bodyData.expireAt, null, System.Globalization.DateTimeStyles.RoundtripKind, out var expire))
-            {
-                mail.ExpireAt = expire;
-            }
-        }
-        catch (Exception e)
-        {
-            // JSON でない場合はそのまま本文として使う
-            Debug.LogWarning($"[Mail] Body パース失敗 (NewsId={news.NewsId}): {e.Message}");
-            mail.Body = news.Body;
-            mail.Rewards = null;
-        }
-
-        return mail;
+        int count = Mgr.Save.MailSaveData.GetBadgeCount(mailData.PublishedMails);
+        main.ui.upperMenuUI.selectMailUI.badge.SetVisible(count > 0);
+    }
+    
+    private void OnMailHide()
+    {
+        UpdateBadge();
     }
 }

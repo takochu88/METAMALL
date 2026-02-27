@@ -1,4 +1,5 @@
 using PrimeTween;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class UseCase_HandleMenu : MonoBehaviour
@@ -22,6 +23,7 @@ public class UseCase_HandleMenu : MonoBehaviour
         MenuType newMenuType = (MenuType)menuTypeIndex;
         if (_currentMenuType == newMenuType) return;
 
+        Debug.Log(menuTypeIndex);
         MenuType prevMenuType = _currentMenuType;
         _currentMenuType = newMenuType;
 
@@ -74,6 +76,7 @@ public class UseCase_HandleMenu : MonoBehaviour
                 selectMainMenuUI.selectPurchaseMenuRowUI.SetVisible(true);
                 selectMainMenuUI.selectGachaMenuRowUI.SetVisible(true);
                 selectMainMenuUI.selectStoryMenuRowUI.SetVisible(true);
+                selectMainMenuUI.selectArcadeMenuRowUI.SetVisible(true);
                 break;
             
             case MenuType.Stage:
@@ -84,6 +87,7 @@ public class UseCase_HandleMenu : MonoBehaviour
                 selectMainMenuUI.selectPurchaseMenuRowUI.SetVisible(false);
                 selectMainMenuUI.selectGachaMenuRowUI.SetVisible(false);
                 selectMainMenuUI.selectStoryMenuRowUI.SetVisible(false);
+                selectMainMenuUI.selectArcadeMenuRowUI.SetVisible(false);
                 break;
             
             case MenuType.GameEvent:
@@ -94,6 +98,7 @@ public class UseCase_HandleMenu : MonoBehaviour
                 selectMainMenuUI.selectPurchaseMenuRowUI.SetVisible(false);
                 selectMainMenuUI.selectGachaMenuRowUI.SetVisible(false);
                 selectMainMenuUI.selectStoryMenuRowUI.SetVisible(false);
+                selectMainMenuUI.selectArcadeMenuRowUI.SetVisible(false);
                 break;
             
             case MenuType.Purchase:
@@ -104,6 +109,7 @@ public class UseCase_HandleMenu : MonoBehaviour
                 selectMainMenuUI.selectPurchaseMenuRowUI.SetVisible(false);
                 selectMainMenuUI.selectGachaMenuRowUI.SetVisible(false);
                 selectMainMenuUI.selectStoryMenuRowUI.SetVisible(false);
+                selectMainMenuUI.selectArcadeMenuRowUI.SetVisible(false);
                 break;
             
             case MenuType.Gacha:
@@ -114,12 +120,32 @@ public class UseCase_HandleMenu : MonoBehaviour
                 selectMainMenuUI.selectPurchaseMenuRowUI.SetVisible(false);
                 selectMainMenuUI.selectGachaMenuRowUI.SetVisible(false);
                 selectMainMenuUI.selectStoryMenuRowUI.SetVisible(false);
+                selectMainMenuUI.selectArcadeMenuRowUI.SetVisible(false);
+                break;
+            
+            case MenuType.Arcade:
+                selectMainMenuUI.selectTopMenuRowUIRight.SetVisible(true);
+                selectMainMenuUI.selectTopMenuRowUILeft.SetVisible(false);
+                selectMainMenuUI.selectStageMenuRowUI.SetVisible(false);
+                selectMainMenuUI.selectGameEventMenuRowUI.SetVisible(false);
+                selectMainMenuUI.selectPurchaseMenuRowUI.SetVisible(false);
+                selectMainMenuUI.selectGachaMenuRowUI.SetVisible(false);
+                selectMainMenuUI.selectStoryMenuRowUI.SetVisible(false);
+                selectMainMenuUI.selectArcadeMenuRowUI.SetVisible(false);
                 break;
                 
         }
         
         selectMainMenuUI.Show();
         main.ui.SetInteractable(true);
-        main.ui.footerMenuUI.SetMenuTitle("バトル");
+        
+        if (Mgr.Master.TryGetMenuBase(_currentMenuType, out var menuBase))
+        {
+            main.ui.footerMenuUI.SetMenuTitle(menuBase.Name);
+        }
+        else
+        {
+            main.ui.footerMenuUI.SetMenuTitle("");
+        }
     }
 }

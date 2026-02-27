@@ -84,6 +84,7 @@ public class MyScrollRect : MonoBehaviour
 
     Action<MyScrollCell> onInitCell;
     Action<int, MyScrollCell> onUpdateCell;
+    Action<int> onSelectCell;
     Tween scrollTween;
 
     // 解決済みセルサイズ（Init 時に確定）
@@ -188,12 +189,27 @@ public class MyScrollRect : MonoBehaviour
 
     void OnDisable()
     {
-        scrollTween.Stop();
+        StopScroll();
     }
 
     // ══════════════════════════════════════════
     //  Public API
     // ══════════════════════════════════════════
+
+    /// <summary>スクロールTweenと慣性を停止する。</summary>
+    public void StopScroll()
+    {
+        scrollTween.Stop();
+        scrollRect.velocity = Vector2.zero;
+    }
+
+    /// <summary>
+    /// セルを事前生成する（データなし）。必要数は内部で算出。
+    /// </summary>
+    public void Init(Action<MyScrollCell> onInit)
+    {
+        Init(GetRequiredCellCount(), onInit, (index, cell) => { });
+    }
 
     /// <summary>
     /// スクロールを初期化する（onInit なし）。
@@ -211,8 +227,7 @@ public class MyScrollRect : MonoBehaviour
     /// <param name="onUpdate">セル更新コールバック (index, cell)。スクロールで再利用されるたびに呼ばれる</param>
     public void Init(int count, Action<MyScrollCell> onInit, Action<int, MyScrollCell> onUpdate)
     {
-        scrollTween.Stop();
-        scrollRect.velocity = Vector2.zero;
+        StopScroll();
 
         // セルサイズ解決
         ResolveCellSize();
@@ -366,12 +381,41 @@ public class MyScrollRect : MonoBehaviour
         RefreshVisibleCells();
     }
 
+    /// <summary>セル選択コールバックを設定する。以降生成されるセルに自動で伝搬する。</summary>
+    public void InitSelectCell(Action<int> onSelectCell)
+    {
+        this.onSelectCell = onSelectCell;
+    }
+
+    /// <summary>ビューポートに必要なセル数（バッファ含む）を返す。</summary>
+    public int GetRequiredCellCount()
+    {
+        EnsureInitialized();
+        ResolveCellSize();
+        if (Stride <= 0f) return 0;
+        return Mathf.CeilToInt(ViewportSize / Stride) + 3;
+    }
+
     /// <summary>指定インデックスの可視セルを検索。</summary>
     public MyScrollCell FindVisibleCell(int index)
     {
         foreach (var cell in visibleCells)
             if (cell.Index == index) return cell;
         return null;
+    }
+
+    /// <summary>可視セルの選択状態を更新する。</summary>
+    public void UpdateSelection(int selectedIndex)
+    {
+        foreach (var cell in visibleCells)
+            ((CellUIBase)cell).SetSelected(cell.Index == selectedIndex);
+    }
+
+    /// <summary>スクロール速度。</summary>
+    public Vector2 Velocity
+    {
+        get => scrollRect.velocity;
+        set => scrollRect.velocity = value;
     }
 
     /// <summary>アニメーション時間の公開。</summary>
@@ -399,8 +443,7 @@ public class MyScrollRect : MonoBehaviour
         set
         {
             EnsureInitialized();
-            scrollTween.Stop();
-            _scrollRect.velocity = Vector2.zero;
+            StopScroll();
             if (IsVertical) _scrollRect.verticalNormalizedPosition = value;
             else            _scrollRect.horizontalNormalizedPosition = value;
             RefreshVisibleCells();
@@ -503,8 +546,7 @@ public class MyScrollRect : MonoBehaviour
 
     void ScrollTo(Vector2 target, bool animated)
     {
-        scrollTween.Stop();
-        scrollRect.velocity = Vector2.zero;
+        StopScroll();
 
         if (!animated)
         {
@@ -609,6 +651,7 @@ public class MyScrollRect : MonoBehaviour
             var go = Instantiate(cellPrefab, content);
             cell = go.GetComponent<MyScrollCell>();
             if (cell == null) cell = go.gameObject.AddComponent<MyScrollCell>();
+            if (onSelectCell != null) cell.InitSelectCell(onSelectCell);
             onInitCell?.Invoke(cell);
         }
 

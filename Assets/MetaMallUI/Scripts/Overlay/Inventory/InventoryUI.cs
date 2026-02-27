@@ -9,30 +9,15 @@ public class InventoryUI : OverlayUIBase
     [SerializeField] private RewardListUI rewardListUI;
     [SerializeField] private TMP_Text emptyText;
 
-    private bool isSetup;
-    private int selectedIndex = -1;
-    private Action<int> onBeforeSwitch;
-    private Action<int> onAfterSwitch;
+    private int selectedIndex => Mgr.Save.SessionData.GetIndex(MenuType.Inventory);
     private Action onHide;
 
-    public void Setup(Action<int> onBeforeSwitch, Action<int> onAfterSwitch, Action onHide = null)
+    public void Setup(Action<int> onSelectCell, Action onHide = null)
     {
-        if (isSetup) return;
-        isSetup = true;
-        this.onBeforeSwitch = onBeforeSwitch;
-        this.onAfterSwitch = onAfterSwitch;
         this.onHide = onHide;
-    }
-
-    public RewardDisplayType SelectedType
-    {
-        get
-        {
-            var types = RewardDisplayTypeExtensions.GetInventoryTypes();
-            return (selectedIndex >= 0 && selectedIndex < types.Length)
-                ? types[selectedIndex]
-                : RewardDisplayType.Currency;
-        }
+        scroll.InitSelectCell(onSelectCell);
+        var types = RewardDisplayTypeExtensions.GetInventoryTypes();
+        scroll.Init(types.Length, OnUpdateCell);
     }
 
     /// <summary>RewardListUI のスクロール位置（0〜1）。</summary>
@@ -42,53 +27,37 @@ public class InventoryUI : OverlayUIBase
         set => rewardListUI.ScrollPosition = value;
     }
 
+    /// <summary>指定インデックスの表示に切り替える（純粋な UI 更新）。</summary>
     public void SelectIndex(int index)
     {
         var types = RewardDisplayTypeExtensions.GetInventoryTypes();
         if (index < 0 || index >= types.Length) return;
 
-        // 旧カテゴリのスクロール位置を保存する機会を与える
-        onBeforeSwitch?.Invoke(selectedIndex);
-
-        selectedIndex = index;
-        RefreshRows();
+        scroll.UpdateSelection(index);
         ShowRewardList(types[index]);
-
-        // 新カテゴリのスクロール位置を復元する機会を与える
-        onAfterSwitch?.Invoke(index);
     }
 
-    private void RefreshRows()
-    {
-        var types = RewardDisplayTypeExtensions.GetInventoryTypes();
-        scroll.Init(types.Length, OnInitCell, OnUpdateCell);
-    }
-
-    private void OnInitCell(MyScrollCell cell)
-    {
-        var row = cell.Get<InventoryCellUI>();
-        row.Setup(OnRowClicked);
-    }
-
-    private void OnUpdateCell(int index, MyScrollCell cell)
-    {
-        var types = RewardDisplayTypeExtensions.GetInventoryTypes();
-        var row = cell.Get<InventoryCellUI>();
-        row.SetData(types[index]);
-        row.SetSelected(index == selectedIndex);
-    }
-
-    private void OnRowClicked(RewardDisplayType type)
+    public void RefreshCellBadges()
     {
         var types = RewardDisplayTypeExtensions.GetInventoryTypes();
         for (int i = 0; i < types.Length; i++)
         {
-            if (types[i] == type)
-            {
-                SelectIndex(i);
-                return;
-            }
+            var cell = scroll.FindVisibleCell(i);
+            if (cell != null) ((InventoryCellUI)cell).UpdateData();
         }
+    }
+
+    private void RefreshCell()
+    {
+        var types = RewardDisplayTypeExtensions.GetInventoryTypes();
+        scroll.Init(types.Length, null, OnUpdateCell);
+    }
+
+    private void OnUpdateCell(int index, MyScrollCell _cell)
+    {
+        var cell = (InventoryCellUI)_cell;
+        cell.UpdateData();
+        cell.SetSelected(index == selectedIndex);
     }
 
     private void ShowRewardList(RewardDisplayType type)
@@ -131,20 +100,18 @@ public class InventoryUI : OverlayUIBase
     protected override void OnAfterShow()
     {
         base.OnAfterShow();
-        int savedIndex = Mgr.Save.SessionData.inventoryTypeIndex;
-        SelectIndex(savedIndex);
+        SelectIndex(selectedIndex);
     }
 
     public override void OnActivated()
     {
         base.OnActivated();
-        RefreshRows();
+        RefreshCell();
     }
 
     protected override void OnAfterHide()
     {
         base.OnAfterHide();
-        selectedIndex = -1;
         onHide?.Invoke();
     }
 }

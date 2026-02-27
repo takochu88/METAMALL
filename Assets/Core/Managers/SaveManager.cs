@@ -10,7 +10,8 @@ public class SaveManager : MonoBehaviour
     public AllCharacterData AllCharacterData { get; private set; } = new AllCharacterData();
     public SessionData SessionData { get; private set; } = new SessionData();
     public MailSaveData MailSaveData { get; private set; } = new MailSaveData();
-    
+    public ArcadeData ArcadeData { get; private set; } = new ArcadeData();
+    public StabilityData StabilityData { get; private set; } = new StabilityData();
     public void Load()
     {
         AllCharacterData.Init(Mgr.Master.characterTable);

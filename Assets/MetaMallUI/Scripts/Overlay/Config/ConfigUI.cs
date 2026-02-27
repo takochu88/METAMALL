@@ -7,11 +7,7 @@ public class ConfigUI : OverlayUIBase
     [SerializeField] private MyScrollRect tabScroll;
     [SerializeField] private MyScrollRect listScroll;
 
-    private bool isSetup;
-    private int selectedIndex;
-    private Action<int> onTypeSelected;
-    private Action<string, float> onValueChanged;
-    private Action<string> onButtonClicked;
+    private int selectedIndex => Mgr.Save.SessionData.GetIndex(MenuType.Config);
 
     private readonly List<ConfigMaster> filteredMasters = new();
 
@@ -20,53 +16,36 @@ public class ConfigUI : OverlayUIBase
 
     public ConfigType SelectedType => AllTypes[selectedIndex];
 
-    public void Setup(Action<int> onTypeSelected, Action<string, float> onValueChanged, Action<string> onButtonClicked)
+    public void Setup(Action<int> onSelectCell, Action<string, float> onValueChanged, Action<string> onButtonClicked)
     {
-        if (isSetup) return;
-        isSetup = true;
-        this.onTypeSelected = onTypeSelected;
-        this.onValueChanged = onValueChanged;
-        this.onButtonClicked = onButtonClicked;
+        tabScroll.InitSelectCell(onSelectCell);
+        tabScroll.Init(AllTypes.Length, OnUpdateTab);
+
+        listScroll.Init(cell =>
+        {
+            cell.Get<ConfigCellUI>().Setup(onValueChanged, onButtonClicked);
+        });
     }
 
+    /// <summary>指定インデックスのタブに切り替える（純粋な UI 更新）。</summary>
     public void SelectIndex(int index)
     {
         if (index < 0 || index >= AllTypes.Length) return;
 
-        selectedIndex = index;
-        onTypeSelected?.Invoke(index);
         RefreshTabs();
         RefreshList();
     }
 
     private void RefreshTabs()
     {
-        tabScroll.Init(AllTypes.Length, OnInitTab, OnUpdateTab);
-    }
-
-    private void OnInitTab(MyScrollCell cell)
-    {
-        var tab = cell.Get<ConfigTabCellUI>();
-        tab.Setup(OnTabClicked);
+        tabScroll.Init(AllTypes.Length, null, OnUpdateTab);
     }
 
     private void OnUpdateTab(int index, MyScrollCell cell)
     {
-        var tab = cell.Get<ConfigTabCellUI>();
+        var tab = (ConfigTabCellUI)cell;
         tab.SetData(AllTypes[index]);
         tab.SetSelected(index == selectedIndex);
-    }
-
-    private void OnTabClicked(ConfigType type)
-    {
-        for (int i = 0; i < AllTypes.Length; i++)
-        {
-            if (AllTypes[i] == type)
-            {
-                SelectIndex(i);
-                return;
-            }
-        }
     }
 
     private void RefreshList()
@@ -81,18 +60,12 @@ public class ConfigUI : OverlayUIBase
                 filteredMasters.Add(table[i]);
         }
 
-        listScroll.Init(filteredMasters.Count, OnInitCell, OnUpdateCell);
-    }
-
-    private void OnInitCell(MyScrollCell cell)
-    {
-        var row = cell.Get<ConfigCellUI>();
-        row.Setup(onValueChanged, onButtonClicked);
+        listScroll.Init(filteredMasters.Count, null, OnUpdateCell);
     }
 
     private void OnUpdateCell(int index, MyScrollCell cell)
     {
-        var row = cell.Get<ConfigCellUI>();
+        var row = (ConfigCellUI)cell;
         var master = filteredMasters[index];
         float value = Mgr.Save.Config.GetValue(master);
         row.SetData(master, value);
@@ -101,8 +74,7 @@ public class ConfigUI : OverlayUIBase
     protected override void OnAfterShow()
     {
         base.OnAfterShow();
-        int savedIndex = Mgr.Save.SessionData.configTypeIndex;
-        SelectIndex(savedIndex);
+        SelectIndex(selectedIndex);
     }
 
     public override void OnActivated()

@@ -124,6 +124,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0bac4ca010ec234a8466f41005d28bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BadgeUI
+  rect: {fileID: 8366268441346451653}
   minScale: 0.8
   maxScale: 1.1
   speed: 6

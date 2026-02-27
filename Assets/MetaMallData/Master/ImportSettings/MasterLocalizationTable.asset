@@ -14,8 +14,66 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LocalizationTable
   rows:
   - key: name-ch-nana
+    index: 0
     ja: "\u30CA\u30CA"
     en: nana
   - key: desc-ch-nana
+    index: 0
     ja: "\u30CA\u30CA"
     en: nana
+  - key: name-ch-yoi
+    index: 0
+    ja: "\u30E8\u30A4"
+    en: 
+  - key: desc-ch-yoi
+    index: 0
+    ja: "\u30E8\u30A4"
+    en: 
+  - key: name-ch-kobore
+    index: 0
+    ja: "\u30B3\u30DC\u30EC"
+    en: 
+  - key: desc-ch-kobore
+    index: 0
+    ja: "\u30B3\u30DC\u30EC"
+    en: 
+  - key: name-ch-nico
+    index: 0
+    ja: "\u30CB\u30B3"
+    en: 
+  - key: desc-ch-nico
+    index: 0
+    ja: "\u30CB\u30B3"
+    en: 
+  - key: name-ch-roco
+    index: 0
+    ja: "\u30ED\u30B3"
+    en: 
+  - key: desc-ch-roco
+    index: 0
+    ja: "\u30ED\u30B3"
+    en: 
+  - key: name-ch-minky
+    index: 0
+    ja: "\u30DF\u30F3\u30AD\u30FC"
+    en: 
+  - key: desc-ch-minky
+    index: 0
+    ja: "\u30DF\u30F3\u30AD\u30FC"
+    en: 
+  - key: name-ch-ikka
+    index: 0
+    ja: "\u30A4\u30C3\u30AB"
+    en: 
+  - key: desc-ch-ikka
+    index: 0
+    ja: "\u30A4\u30C3\u30AB"
+    en: 
+  - key: name-ch-malulu
+    index: 0
+    ja: "\u30E2\u30EB\u30EB"
+    en: 
+  - key: desc-ch-malulu
+    index: 0
+    ja: "\u30E2\u30EB\u30EB"
+    en: 

@@ -33,6 +33,9 @@ public class MasterManager : MonoBehaviour
     [BoxGroup("コンテンツ")]  public MallTable mallTable;
     [BoxGroup("コンテンツ")]  public MissionTable missionTable;
     [BoxGroup("コンテンツ")]  public GameEventTable gameEventTable;
+    [BoxGroup("コンテンツ")]  public CollectionTable collectionTable;
+    [BoxGroup("コンテンツ")]  public SeasonPassTable seasonPassTable;
+    [BoxGroup("コンテンツ")]  public LoginBonusTable loginBonusTable;
 
     Dictionary<int, RewardBase> allRewardMasters;
     public Dictionary<int, RewardBase> AllRewardMasters => allRewardMasters;

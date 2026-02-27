@@ -10,6 +10,7 @@ public class RewardIconUI : MonoBehaviour
     [SerializeField] private MyButton button;
     [SerializeField] private CanvasGroup canvasGroup;
     [SerializeField] private BadgeUI badgeUI;
+    [SerializeField] private Image dark;
 
     private int rewardId;
     private float baseSize;
@@ -22,6 +23,7 @@ public class RewardIconUI : MonoBehaviour
         baseSize = rect.sizeDelta.x;
         baseFontSize = amountText.GetFontSize();
         button.SetOnClick(OnClick);
+        AdjustSize();
     }
 
     public void SetData(int rewardId, RewardIconDisplayType displayType, int amount = 1)
@@ -60,11 +62,22 @@ public class RewardIconUI : MonoBehaviour
         badgeUI.SetVisible(Mgr.Save.RewardStockData.IsNewUseItem(rewardId)　&& CanUse);
     }
 
+    private const float ReferenceSize = 100f;
+    private const float ReferenceFontSize = 18f;
+    private const float ReferenceBadgeSize = 20f;
+
     public void SetSize(float size)
     {
         rect.sizeDelta = new Vector2(size, size);
-        if (baseSize > 0f)
-            amountText.SetFontSize(baseFontSize * (size / baseSize));
+        AdjustSize();
+    }
+    
+    public void AdjustSize()
+    {
+        float size = rect.sizeDelta.x;
+        float ratio = size / ReferenceSize;
+        amountText.SetFontSize(ReferenceFontSize * ratio);
+        badgeUI.AdjustSize(ReferenceBadgeSize * ratio);
     }
 
     /// <summary>出現前状態にリセット（scale=0, alpha=0, active=true）。</summary>
@@ -103,5 +116,10 @@ public class RewardIconUI : MonoBehaviour
             badgeUI.SetVisible(false);
 
         UseCase_DisplayItem.OnShowRewardDetail(reward, CanUse);
+    }
+
+    public void SetVisibleDark(bool visible)
+    {
+        dark.enabled = visible;
     }
 }

@@ -1,27 +1,9 @@
-using System;
-
 public class InventoryCellUI : CellUIBase
 {
-    private RewardDisplayType displayType;
-    private Action<RewardDisplayType> onClick;
-
-    public RewardDisplayType DisplayType => displayType;
-
-    public void Setup(Action<RewardDisplayType> onClick)
+    public void UpdateData()
     {
-        this.onClick = onClick;
-        Button.SetOnClick(OnClick);
-    }
-
-    public void SetData(RewardDisplayType type)
-    {
-        displayType = type;
+        RewardDisplayType type = (RewardDisplayType)Index;
         Title.text = type.ToLocalizedName();
         SetBadgeVisible(type == RewardDisplayType.Use && Mgr.Save.RewardStockData.HasNewUseItem);
-    }
-
-    private void OnClick()
-    {
-        onClick?.Invoke(displayType);
     }
 }

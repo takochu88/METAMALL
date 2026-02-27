@@ -1,16 +1,25 @@
 using System.Collections.Generic;
-using UnityEngine;
 
-public class UseCase_Inventory : MonoBehaviour
+public class UseCase_Inventory : UseCase_MenuBase
 {
-    private Main main;
+    protected override MenuType MenuType => MenuType.Inventory;
+
     private readonly Dictionary<int, float> scrollPositions = new();
+    private InventoryUI inventoryUI;
 
     public void Setup(Main main)
     {
         this.main = main;
-        main.ui.OverlayStack.inventoryUI.Setup(OnBeforeSwitch, OnAfterSwitch, OnInventoryHide);
-        main.ui.TopMenuUI.subMenuUI.selectInbentryMenuUI.button.SetOnClick(OnShowInventory);
+        inventoryUI = main.ui.OverlayStack.inventoryUI;
+        inventoryUI.Setup(OnSelectCell, OnInventoryHide);
+        main.ui.TopMenuUI.subMenuUI.selectInventoryMenuUI.button.SetOnClick(OnShowInventory);
+        Mgr.Save.RewardStockData.OnNewUseItemsChanged += OnNewUseItemsChanged;
+    }
+
+    private void OnNewUseItemsChanged()
+    {
+        UpdateBadge();
+        inventoryUI.RefreshCellBadges();
     }
 
     public void OnShowInventory()
@@ -18,27 +27,30 @@ public class UseCase_Inventory : MonoBehaviour
         main.ui.OverlayStack.inventoryUI.Show();
     }
 
-    private void OnBeforeSwitch(int oldIndex)
+    protected override void OnSelectCell(int newIndex)
     {
-        if (oldIndex < 0) return;
-        scrollPositions[oldIndex] = main.ui.OverlayStack.inventoryUI.ScrollPosition;
-    }
+        // 旧カテゴリのスクロール位置を保存
+        int oldIndex = SelectedIndex;
+        scrollPositions[oldIndex] = inventoryUI.ScrollPosition;
 
-    private void OnAfterSwitch(int newIndex)
-    {
-        Mgr.Save.SessionData.inventoryTypeIndex = newIndex;
+        // SessionData 更新
+        base.OnSelectCell(newIndex);
 
+        // UI 更新
+        inventoryUI.SelectIndex(newIndex);
+
+        // 新カテゴリのスクロール位置を復元
         if (scrollPositions.TryGetValue(newIndex, out float pos))
-            main.ui.OverlayStack.inventoryUI.ScrollPosition = pos;
+            inventoryUI.ScrollPosition = pos;
     }
 
     private void OnInventoryHide()
     {
-        if (main.ui.OverlayStack.inventoryUI.SelectedType == RewardDisplayType.Use)
+        var types = RewardDisplayTypeExtensions.GetInventoryTypes();
+        if (SelectedIndex >= 0 && SelectedIndex < types.Length && types[SelectedIndex] == RewardDisplayType.Use)
             Mgr.Save.RewardStockData.ClearNewUseItems();
 
         scrollPositions.Clear();
-        UpdateBadge();
     }
 
     public void OnRefresh()
@@ -48,7 +60,7 @@ public class UseCase_Inventory : MonoBehaviour
 
     public void UpdateBadge()
     {
-        var badge = main.ui.TopMenuUI.subMenuUI.selectInbentryMenuUI.badge;
+        var badge = main.ui.TopMenuUI.subMenuUI.selectInventoryMenuUI.badge;
         if (badge != null)
             badge.SetVisible(Mgr.Save.RewardStockData.HasNewUseItem);
     }

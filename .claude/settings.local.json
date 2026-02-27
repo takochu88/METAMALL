@@ -27,7 +27,11 @@
       "mcp__uLoopMCP__get-hierarchy",
       "mcp__uLoopMCP__clear-console",
       "mcp__uLoopMCP__control-play-mode",
-      "mcp__uLoopMCP__unity-search"
+      "mcp__uLoopMCP__unity-search",
+      "Bash(cd:*)",
+      "Bash(curl:*)",
+      "Bash(python3:*)",
+      "Bash(echo === $\\(basename $f\\) ===:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

@@ -14,7 +14,11 @@ public class Main : MonoBehaviour
         Test();
         useCase.topMenu.OnRefresh();
 
-        Mgr.PlayFab.Login();
+        Mgr.PlayFab.Login(onSuccess: () =>
+        {
+            useCase.titleData.Fetch();
+            Mgr.PlayFab.FetchStability();
+        });
     }
 
     private void Update()

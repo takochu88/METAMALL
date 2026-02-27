@@ -140,6 +140,7 @@ public class RewardListUI : MonoBehaviour
     private int revealedCount;
     private Coroutine animCoroutine;
     private bool canUse;
+    private bool dark;
     private int resolvedCountPerLine;
     private Action onComplete;
     
@@ -255,18 +256,16 @@ public class RewardListUI : MonoBehaviour
                       RewardMergeMode merge = default,
                       RewardListOneLineArrangeType oneLineArrangeType = default,
                       Action onComplete = null,
-                      bool canUse = false)
+                      bool canUse = false,
+                      bool animated = true,
+                      bool dark = false)
     {
         StopAnimation();
 
-        brockOverlay.enabled = true;
-        brockOverlay.transform.SetAsLastSibling();
         if (oneLineArrangeType != default) this.oneLineArrangeType = oneLineArrangeType;
         this.canUse = canUse;
+        this.dark = dark;
         this.onComplete = onComplete;
-
-        SetSkipVisible(false);
-        SetMergeVisible(false);
 
         // モード設定（default = Inspector の値を使用）
         var activeMode  = mode  != default ? mode  : displayMode;
@@ -288,19 +287,24 @@ public class RewardListUI : MonoBehaviour
         scrollRect.SetCellMainSize(iconSize + lineSpacing);
         scrollRect.SetPadding(heightPadding, heightPadding);
 
-        if (activeMode == RewardDisplayMode.AllAtOnce)
+        if (!animated || activeMode == RewardDisplayMode.AllAtOnce)
         {
             revealedCount = displayRewards.Count;
             scrollRect.Init(lineCount, OnInitCell, OnUpdateCell);
             AdjustHeight();
             scrollRect.ScrollToTop(false);
             brockOverlay.enabled = false;
-            UpdateMergeVisible();
+            if (animated) UpdateMergeVisible();
+            else          SetMergeVisible(false);
             this.onComplete?.Invoke();
             this.onComplete = null;
         }
-        else // OneByOne
+        else // OneByOne (animated)
         {
+            brockOverlay.enabled = true;
+            brockOverlay.transform.SetAsLastSibling();
+            SetSkipVisible(false);
+            SetMergeVisible(false);
             revealedCount = 0;
             scrollRect.Init(lineCount, OnInitCell, OnUpdateCell);
             AdjustHeight();
@@ -361,7 +365,7 @@ public class RewardListUI : MonoBehaviour
         int visible = Mathf.Clamp(revealedCount - start, 0, total);
         line.SetLineInfo(lineIndex, total);
         line.SetIconSize(iconSize, visible);
-        line.SetData(displayRewards, start, visible, canUse);
+        line.SetData(displayRewards, start, visible, canUse, dark);
         line.LayoutIcons(oneLineArrangeType, linePadding);
         // 既に表示済みアイコンのスケール/アルファを正常に戻す（リサイクル対策）
         for (int i = 0; i < visible; i++)

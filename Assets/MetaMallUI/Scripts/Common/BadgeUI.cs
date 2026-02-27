@@ -2,9 +2,10 @@
 
 public class BadgeUI : MonoBehaviour
 {
-    [SerializeField] float minScale = 0.8f;
-    [SerializeField] float maxScale = 1.2f;
-    [SerializeField] float speed = 3f;
+    [SerializeField] private RectTransform rect;
+    [SerializeField] private float minScale = 0.8f;
+    [SerializeField] private float maxScale = 1.2f;
+    [SerializeField] private float speed = 3f;
 
     void Update()
     {
@@ -21,5 +22,10 @@ public class BadgeUI : MonoBehaviour
     public void SetVisible(bool visible)
     {
         gameObject.SetActiveIfChanged(visible);
+    }
+
+    public void AdjustSize(float size)
+    {
+        rect.sizeDelta = new Vector2(size, size);
     }
 }
